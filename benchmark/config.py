@@ -40,22 +40,21 @@ STATS_JSON = os.path.join(RESULTS_DIR, "stats_summary.json")
 
 # ── Latin Square (condition order per rep) ─────────────────────────────────
 # Eliminates carry-over effects from condition ordering.
-# 3 conditions: R=Ralph, A=AttractorFlow, C=Combined
+# 2 conditions: R=Ralph, A=AttractorFlow (combined dropped in Round 2)
 LATIN_SQUARE = [
-    ["ralph", "attractor", "combined"],   # rep 0
-    ["attractor", "combined", "ralph"],   # rep 1
-    ["combined", "ralph", "attractor"],   # rep 2
+    ["ralph", "attractor"],   # rep 0
+    ["attractor", "ralph"],   # rep 1
+    ["ralph", "attractor"],   # rep 2
 ]
 
 CONDITION_LABELS = {
     "ralph": "Ralph",
     "attractor": "AttractorFlow",
-    "combined": "Ralph + AttractorFlow",
 }
 
 # ── CLI runner ─────────────────────────────────────────────────────────────
 CLI_MODEL = "claude-haiku-4-5-20251001"  # cheapest model; Sonnet for higher quality
-CLI_DELAY_SECONDS = 3.0                  # pause before every CLI call (rate-limit guard)
+CLI_DELAY_SECONDS = 8.0                  # pause before every CLI call (rate-limit guard)
 CLI_MAX_RETRIES = 3                      # attempts with exponential backoff (3s, 6s, 12s)
 CLI_TIMEOUT_SECONDS = 120                # per-call hard timeout
 
