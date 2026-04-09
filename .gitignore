@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+.venv313/
+venv/
+env/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code internals
+.claude/
+.remember/
+
+# Temp attractor trial dirs (auto-cleaned, but just in case)
+/tmp/attractor_*/
+
+# Raw model output files (large, reproducible)
+benchmark/results/raw/
+
+# Secrets / local config
+.env
+*.env

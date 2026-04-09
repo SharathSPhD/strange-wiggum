@@ -1,0 +1,707 @@
+{
+  "d6829a1c": {
+    "task_id": "A01",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "57a8f5b3": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "19486ed2": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "99bc7617": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "4618073d": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "87630d87": {
+    "task_id": "C01",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "70df1872": {
+    "task_id": "C01",
+    "condition": "combined",
+    "rep": 0
+  },
+  "fcc5e2f1": {
+    "task_id": "C01",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "57c34738": {
+    "task_id": "C01",
+    "condition": "combined",
+    "rep": 1
+  },
+  "48ee50d9": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "17e29d4d": {
+    "task_id": "C01",
+    "condition": "combined",
+    "rep": 2
+  },
+  "35be2ed2": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "ad307969": {
+    "task_id": "C01",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "84d76e2b": {
+    "task_id": "C02",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "1c288154": {
+    "task_id": "C02",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "2f86fab9": {
+    "task_id": "C02",
+    "condition": "combined",
+    "rep": 0
+  },
+  "2f3a034e": {
+    "task_id": "C02",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "90ada5fe": {
+    "task_id": "C02",
+    "condition": "combined",
+    "rep": 1
+  },
+  "c130a797": {
+    "task_id": "C02",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "5a7467f8": {
+    "task_id": "C02",
+    "condition": "combined",
+    "rep": 2
+  },
+  "50ab55dd": {
+    "task_id": "C02",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "414c4ca0": {
+    "task_id": "C02",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "f24d2b8e": {
+    "task_id": "C03",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "c4e8bf1c": {
+    "task_id": "C03",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "782b7ab2": {
+    "task_id": "C03",
+    "condition": "combined",
+    "rep": 0
+  },
+  "e15b5d79": {
+    "task_id": "C03",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "d3829268": {
+    "task_id": "C03",
+    "condition": "combined",
+    "rep": 1
+  },
+  "e0fe835e": {
+    "task_id": "C03",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "0de2e884": {
+    "task_id": "C03",
+    "condition": "combined",
+    "rep": 2
+  },
+  "5e9a83ae": {
+    "task_id": "C03",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "fd057722": {
+    "task_id": "C03",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "5b6f632b": {
+    "task_id": "C04",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "e8efbd50": {
+    "task_id": "C04",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "d070faea": {
+    "task_id": "C04",
+    "condition": "combined",
+    "rep": 0
+  },
+  "203008b2": {
+    "task_id": "C04",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "9a17d0b0": {
+    "task_id": "C04",
+    "condition": "combined",
+    "rep": 1
+  },
+  "103363ab": {
+    "task_id": "C04",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "dddc1c60": {
+    "task_id": "C04",
+    "condition": "combined",
+    "rep": 2
+  },
+  "d8657ac4": {
+    "task_id": "C04",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "66bcc559": {
+    "task_id": "C04",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "414c72cd": {
+    "task_id": "C05",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "c8b29e84": {
+    "task_id": "C05",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "4b4697c6": {
+    "task_id": "C05",
+    "condition": "combined",
+    "rep": 0
+  },
+  "f2cadc73": {
+    "task_id": "C05",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "32e75c35": {
+    "task_id": "C05",
+    "condition": "combined",
+    "rep": 1
+  },
+  "b2eca860": {
+    "task_id": "C05",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "978bfd44": {
+    "task_id": "C05",
+    "condition": "combined",
+    "rep": 2
+  },
+  "fd42727d": {
+    "task_id": "C05",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "f62066d2": {
+    "task_id": "C05",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "eda29668": {
+    "task_id": "C06",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "3d5c521e": {
+    "task_id": "C06",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "2f6a673e": {
+    "task_id": "C06",
+    "condition": "combined",
+    "rep": 0
+  },
+  "46f871eb": {
+    "task_id": "C06",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "c59d5778": {
+    "task_id": "C06",
+    "condition": "combined",
+    "rep": 1
+  },
+  "99be9a38": {
+    "task_id": "C06",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "24a3406e": {
+    "task_id": "C06",
+    "condition": "combined",
+    "rep": 2
+  },
+  "752f1a74": {
+    "task_id": "C06",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "16b1bb40": {
+    "task_id": "C06",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "249a6603": {
+    "task_id": "C07",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "08b6124e": {
+    "task_id": "C07",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "4eee37e0": {
+    "task_id": "C07",
+    "condition": "combined",
+    "rep": 0
+  },
+  "222c2420": {
+    "task_id": "C07",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "f61681ef": {
+    "task_id": "C07",
+    "condition": "combined",
+    "rep": 1
+  },
+  "a6b1155c": {
+    "task_id": "C07",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "0716c69e": {
+    "task_id": "C07",
+    "condition": "combined",
+    "rep": 2
+  },
+  "8209631f": {
+    "task_id": "C07",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "43809551": {
+    "task_id": "C07",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "e4dfaee4": {
+    "task_id": "C08",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "b92123b9": {
+    "task_id": "C08",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "7d288778": {
+    "task_id": "C08",
+    "condition": "combined",
+    "rep": 0
+  },
+  "ab8df9d0": {
+    "task_id": "C08",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "ccb875a7": {
+    "task_id": "C08",
+    "condition": "combined",
+    "rep": 1
+  },
+  "c1c9d08f": {
+    "task_id": "C08",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "1979cf0d": {
+    "task_id": "C08",
+    "condition": "combined",
+    "rep": 2
+  },
+  "7d0ec3cd": {
+    "task_id": "C08",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "552ccd56": {
+    "task_id": "C08",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "47fea365": {
+    "task_id": "A01",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "bf011b8d": {
+    "task_id": "A01",
+    "condition": "combined",
+    "rep": 0
+  },
+  "25cc026b": {
+    "task_id": "A01",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "93ec1c32": {
+    "task_id": "A01",
+    "condition": "combined",
+    "rep": 1
+  },
+  "47af64a5": {
+    "task_id": "A01",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "efda1d6d": {
+    "task_id": "A01",
+    "condition": "combined",
+    "rep": 2
+  },
+  "aad85ba6": {
+    "task_id": "A01",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "6e4a6192": {
+    "task_id": "A01",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "df4d4a96": {
+    "task_id": "A02",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "c6270e24": {
+    "task_id": "A02",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "e350ee15": {
+    "task_id": "A02",
+    "condition": "combined",
+    "rep": 0
+  },
+  "e6abe380": {
+    "task_id": "A02",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "7a5272cc": {
+    "task_id": "A02",
+    "condition": "combined",
+    "rep": 1
+  },
+  "f431324e": {
+    "task_id": "A02",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "4597606e": {
+    "task_id": "A02",
+    "condition": "combined",
+    "rep": 2
+  },
+  "4b5918bd": {
+    "task_id": "A02",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "468fce92": {
+    "task_id": "A02",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "aba10f58": {
+    "task_id": "A03",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "10c5f056": {
+    "task_id": "A03",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "9f5d5886": {
+    "task_id": "A03",
+    "condition": "combined",
+    "rep": 0
+  },
+  "1a3cfafb": {
+    "task_id": "A03",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "60a202b7": {
+    "task_id": "A03",
+    "condition": "combined",
+    "rep": 1
+  },
+  "0a39f2e9": {
+    "task_id": "A03",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "6fbf805f": {
+    "task_id": "A03",
+    "condition": "combined",
+    "rep": 2
+  },
+  "3ad5a31b": {
+    "task_id": "A03",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "7ca1589f": {
+    "task_id": "A03",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "90f27abc": {
+    "task_id": "A04",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "4c2fe616": {
+    "task_id": "A04",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "bc661432": {
+    "task_id": "A04",
+    "condition": "combined",
+    "rep": 0
+  },
+  "35cfbd27": {
+    "task_id": "A04",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "790a82f7": {
+    "task_id": "A04",
+    "condition": "combined",
+    "rep": 1
+  },
+  "39dbbf36": {
+    "task_id": "A04",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "003d50f1": {
+    "task_id": "A04",
+    "condition": "combined",
+    "rep": 2
+  },
+  "be36bef8": {
+    "task_id": "A04",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "7abb13d4": {
+    "task_id": "A04",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "15473a99": {
+    "task_id": "A05",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "4aa22d8b": {
+    "task_id": "A05",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "d5dfb3b8": {
+    "task_id": "A05",
+    "condition": "combined",
+    "rep": 0
+  },
+  "9623a77c": {
+    "task_id": "A05",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "15a9e50a": {
+    "task_id": "A05",
+    "condition": "combined",
+    "rep": 1
+  },
+  "a8809cec": {
+    "task_id": "A05",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "a9461eab": {
+    "task_id": "A05",
+    "condition": "combined",
+    "rep": 2
+  },
+  "fa96705a": {
+    "task_id": "A05",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "9cf3d4ef": {
+    "task_id": "A05",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "fad0d3b8": {
+    "task_id": "A06",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "9726ab8d": {
+    "task_id": "A06",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "7b533afc": {
+    "task_id": "A06",
+    "condition": "combined",
+    "rep": 0
+  },
+  "65d732fc": {
+    "task_id": "A06",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "3f9a4cca": {
+    "task_id": "A06",
+    "condition": "combined",
+    "rep": 1
+  },
+  "1d8dcc87": {
+    "task_id": "A06",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "7e539f53": {
+    "task_id": "A06",
+    "condition": "combined",
+    "rep": 2
+  },
+  "1f76fa50": {
+    "task_id": "A06",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "c069365d": {
+    "task_id": "A06",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "f1dbf8aa": {
+    "task_id": "A07",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "ac13455f": {
+    "task_id": "A07",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "a9d845f3": {
+    "task_id": "A07",
+    "condition": "combined",
+    "rep": 0
+  },
+  "7cc07781": {
+    "task_id": "A07",
+    "condition": "attractor",
+    "rep": 1
+  },
+  "f40d0cbf": {
+    "task_id": "A07",
+    "condition": "combined",
+    "rep": 1
+  },
+  "d1da86bb": {
+    "task_id": "A07",
+    "condition": "ralph",
+    "rep": 1
+  },
+  "ef74495a": {
+    "task_id": "A07",
+    "condition": "combined",
+    "rep": 2
+  },
+  "74ef4e68": {
+    "task_id": "A07",
+    "condition": "ralph",
+    "rep": 2
+  },
+  "1e433267": {
+    "task_id": "A07",
+    "condition": "attractor",
+    "rep": 2
+  },
+  "29204fff": {
+    "task_id": "C01",
+    "condition": "attractor",
+    "rep": 0
+  },
+  "ebe294ff": {
+    "task_id": "C01",
+    "condition": "ralph",
+    "rep": 0
+  },
+  "940004a5": {
+    "task_id": "C01",
+    "condition": "attractor",
+    "rep": 0
+  }
+}
