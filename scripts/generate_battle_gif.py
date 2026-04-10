@@ -1,274 +1,336 @@
 """
-Generate agent-wars-battle.gif — standalone pixel-art battle animation.
+Generate docs/agent-wars-battle.gif — pixel-faithful Python replica of the
+HTML5 canvas battle animation in docs/index.html.
 
-Produces docs/agent-wars-battle.gif (600×280, ~30 frames, 12 fps).
+Samples every 5th JS frame (300 total → 60 GIF frames) at 83 ms each ≈ 12 fps.
+Canvas dimensions match the HTML: 800×280, scale (P) = 4.
+
 Run from project root:
     python scripts/generate_battle_gif.py
 """
 
+from __future__ import annotations
+import math
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 OUT_PATH = Path("docs/agent-wars-battle.gif")
+W, H = 800, 280
+P = 4            # JS `scale` variable
+TOTAL_JS = 300   # JS TOTAL_FRAMES
+SAMPLE_STEP = 5  # capture every Nth JS frame
+MS_PER_FRAME = 83  # ~12 fps
 
-W, H = 600, 280
-P = 4  # pixel scale (1 logical pixel = 4×4 screen pixels)
-FPS = 12
-DURATION = int(1000 / FPS)  # ms per frame
 
-# Palette
-BG       = (13, 13, 13)
-GRID     = (25, 25, 25)
-GREEN    = (57, 255, 20)
-CYAN     = (0, 255, 255)
-YELLOW   = (251, 216, 0)
-RED      = (230, 57, 70)
-BLUE     = (58, 134, 255)
-BROWN    = (139, 90, 43)
-WHITE    = (255, 255, 255)
-BLACK    = (0, 0, 0)
+# ── colour helpers ────────────────────────────────────────────────────────────
+
+def hex_to_rgb(h: str) -> tuple[int, int, int]:
+    h = h.lstrip('#')
+    return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
+
+def blend(base: tuple, over: tuple, alpha: float) -> tuple[int, int, int]:
+    """Alpha-blend `over` onto `base` (alpha 0..1)."""
+    return tuple(int(b * (1 - alpha) + o * alpha) for b, o in zip(base, over))
+
+
+BG_COL   = (13,  13,  13)
+GREEN    = (57,  255, 20)
+CYAN     = (0,   255, 255)
+YELLOW   = (255, 255, 0)
+RED      = (255, 65,  65)
+LIME     = (57,  255, 20)
 ORANGE   = (255, 107, 53)
-DARK_HEX = (20, 30, 40)
-LIME     = (57, 255, 20)
 
 
-def px(draw: ImageDraw.ImageDraw, x: int, y: int, color: tuple, w: int = 1, h: int = 1):
-    """Draw a logical pixel block at (x, y) in pixel coordinates."""
-    draw.rectangle([x * P, y * P, (x + w) * P - 1, (y + h) * P - 1], fill=color)
+# ── drawing primitives ────────────────────────────────────────────────────────
+
+def fill_rect(draw: ImageDraw.ImageDraw,
+              x: float, y: float, w: float, h: float,
+              color: tuple) -> None:
+    x1, y1 = int(round(x)), int(round(y))
+    x2, y2 = int(round(x + w)) - 1, int(round(y + h)) - 1
+    if x2 >= x1 and y2 >= y1:
+        draw.rectangle([x1, y1, x2, y2], fill=color)
 
 
-def draw_ralph(draw: ImageDraw.ImageDraw, cx: int, cy: int, bob: int = 0, flail: float = 0.0):
-    """Ralph Wiggum pixel art.
-
-    cx, cy: logical pixel centre-bottom of character
-    bob: vertical offset for idle bob (0 or -1)
-    flail: 0.0 = neutral, 1.0 = arms flailing
-    """
-    y0 = cy + bob
-
-    # Hair (brown spikes)
-    for hx, hy in [(-2, 0), (-1, -1), (0, -2), (1, -1), (2, 0)]:
-        px(draw, cx + hx, y0 - 11 + hy, BROWN)
-
-    # Head (yellow, 6×5)
-    px(draw, cx - 3, y0 - 10, YELLOW, 6, 5)
-
-    # Eyes (white + black pupil)
-    px(draw, cx - 2, y0 - 9, WHITE, 2, 2)
-    px(draw, cx + 1, y0 - 9, WHITE, 2, 2)
-    px(draw, cx - 1, y0 - 8, BLACK)
-    px(draw, cx + 2, y0 - 8, BLACK)
-
-    # Mouth (grin)
-    px(draw, cx - 2, y0 - 6, BLACK, 5, 1)
-    px(draw, cx - 2, y0 - 5, WHITE, 5, 1)
-
-    # Body / shirt (red, 5×4)
-    px(draw, cx - 2, y0 - 4, RED, 5, 4)
-
-    # Arms
-    arm_dy = int(flail * 3)
-    px(draw, cx - 4, y0 - 3 - arm_dy, RED, 2, 2)  # left arm
-    px(draw, cx + 3, y0 - 3 + arm_dy, RED, 2, 2)  # right arm (mirror flail)
-
-    # Shorts (blue, 5×2)
-    px(draw, cx - 2, y0, BLUE, 5, 2)
-
-    # Legs
-    px(draw, cx - 2, y0 + 2, YELLOW, 2, 2)
-    px(draw, cx + 1, y0 + 2, YELLOW, 2, 2)
-
-    # Shoes
-    px(draw, cx - 3, y0 + 4, BLACK, 3, 1)
-    px(draw, cx + 1, y0 + 4, BLACK, 3, 1)
+def draw_circle(img: Image.Image,
+                cx: float, cy: float, r: float,
+                color: tuple, alpha: float = 1.0) -> None:
+    """Draw a filled circle with optional alpha blend onto img."""
+    if r <= 0:
+        return
+    r = int(round(r))
+    cx, cy = int(round(cx)), int(round(cy))
+    overlay = Image.new("RGB", img.size, (0, 0, 0))
+    od = ImageDraw.Draw(overlay)
+    od.ellipse([cx - r, cy - r, cx + r, cy + r], fill=color)
+    img.paste(overlay, mask=Image.new("L", img.size,
+              int(255 * alpha)).crop((cx - r, cy - r, cx + r, cy + r)).resize(img.size) if False
+              else _make_circle_mask(img.size, cx, cy, r, alpha))
 
 
-def draw_af(draw: ImageDraw.ImageDraw, cx: int, cy: int, t: float, win: bool = False):
-    """AttractorFlow pixel art.
-
-    cx, cy: logical pixel centre-bottom of character
-    t: animation time (0..1, loops)
-    win: if True, particles spiral outward
-    """
-    import math
-    y0 = cy
-
-    # Dark hexagonal body (7×8)
-    for bx, by, bw, bh in [
-        (-3, -12, 6, 1),
-        (-4, -11, 8, 6),
-        (-3, -5,  6, 1),
-    ]:
-        px(draw, cx + bx, y0 + by, DARK_HEX, bw, bh)
-
-    # Circuit lines on body
-    px(draw, cx - 2, y0 - 10, CYAN, 1, 1)
-    px(draw, cx,     y0 - 10, CYAN, 1, 1)
-    px(draw, cx + 2, y0 - 10, CYAN, 1, 1)
-    px(draw, cx - 1, y0 - 8,  CYAN, 3, 1)
-
-    # Spiral eye (radial rings in white/cyan)
-    px(draw, cx - 1, y0 - 9, WHITE, 2, 2)
-    px(draw, cx,     y0 - 9, CYAN,  1, 1)
-
-    # Orbiting particles (3, at 120° intervals)
-    angles = [t * 6.28 + i * 2.09 for i in range(3)]
-    radii  = [5, 7, 6]
-    colors = [CYAN, LIME, ORANGE]
-    scales = [1.5, 1.0, 1.2] if win else [1.0, 1.0, 1.0]
-    for angle, r, color, scale in zip(angles, radii, colors, scales):
-        r2 = r * scale
-        ox = int(math.cos(angle) * r2)
-        oy = int(math.sin(angle) * r2 * 0.5)
-        px(draw, cx + ox, y0 - 8 + oy, color)
-
-    # Legs (dark thin)
-    px(draw, cx - 1, y0 - 1, DARK_HEX, 1, 3)
-    px(draw, cx + 1, y0 - 1, DARK_HEX, 1, 3)
-
-    # Feet
-    px(draw, cx - 2, y0 + 2, CYAN, 2, 1)
-    px(draw, cx + 1, y0 + 2, CYAN, 2, 1)
+def _make_circle_mask(size, cx, cy, r, alpha):
+    mask = Image.new("L", size, 0)
+    md = ImageDraw.Draw(mask)
+    md.ellipse([cx - r, cy - r, cx + r, cy + r], fill=int(255 * alpha))
+    return mask
 
 
-def draw_bg(draw: ImageDraw.ImageDraw):
-    """Background with pixel grid."""
-    draw.rectangle([0, 0, W, H], fill=BG)
-    for gx in range(0, W, P * 4):
-        draw.line([gx, 0, gx, H], fill=GRID)
-    for gy in range(0, H, P * 4):
-        draw.line([0, gy, W, gy], fill=GRID)
+def radial_glow(img: Image.Image,
+                cx: float, cy: float,
+                inner_col: tuple, outer_col: tuple,
+                max_r: float, steps: int = 8) -> None:
+    """Simulate a radial gradient by drawing concentric circles."""
+    for i in range(steps, 0, -1):
+        t = i / steps
+        r = max_r * t
+        col = blend(outer_col, inner_col, 1 - t)
+        a = (1 - t) * 0.7 + 0.3  # fade towards edge
+        draw_circle(img, cx, cy, r, col, a)
 
 
-def draw_text_px(draw: ImageDraw.ImageDraw, text: str, lx: int, ly: int, color: tuple, scale: int = 1):
-    """Tiny 3×5 pixel font for labels."""
-    GLYPHS = {
-        'A': "0110011110001", 'B': "1110100111001110", 'C': "0111100001000110",
-        'D': "1110100010011110", 'E': "1111100011001111", 'F': "1111100011001000",
-        'G': "0111100001010110", 'H': "1001100111001001", 'I': "111010001111",
-        'J': "001000100110010", 'K': "100110100101001", 'L': "100010001001111",
-        'M': "10001110110101001", 'N': "1000110011010011001", 'O': "0110100010010110",
-        'P': "1110100111001000", 'Q': "0110100010110101", 'R': "1110100111001001",
-        'S': "0111100001100111", 'T': "11100100001000010",
-        'U': "1001100110010110", 'V': "1001100110100100",
-        'W': "1000110001101011010001", 'X': "1001010100010101001",
-        'Y': "1001010100001000010", 'Z': "1110001001001111",
-        '0': "0110101110010110", '1': "010110010010111",
-        '2': "0110000100100111", '3': "1110000100011110",
-        '4': "1001100111100001", '5': "1111100011000111",
-        '6': "0110100011010110", '7': "1110000100010001",
-        '8': "0110100101010110", '9': "0110100101100110",
-        '.': "00001", ':': "10001", '-': "000111000", ' ': "00000",
-        '!': "01001001000001", '%': "11000100010001011",
-        'μ': "00010001100101111", 'σ': "011101011011",
-    }
-    x = lx
-    for ch in text.upper():
-        g = GLYPHS.get(ch, GLYPHS[' '])
-        w = (len(g) + 4) // 5
-        for i, bit in enumerate(g):
-            if bit == '1':
-                r = i // w
-                c = i % w
-                draw.rectangle(
-                    [(x + c) * scale, (ly + r) * scale,
-                     (x + c) * scale + scale - 1, (ly + r) * scale + scale - 1],
-                    fill=color
-                )
-        x += w + 1
+# ── character drawing ─────────────────────────────────────────────────────────
 
-
-def draw_score_bar(draw: ImageDraw.ImageDraw, lx: int, ly: int, label: str,
-                   score: float, max_score: float, color: tuple, progress: float = 1.0):
-    """Draw a labelled score bar."""
-    bar_w = 50
-    filled = int(bar_w * (score / max_score) * min(progress, 1.0))
-    draw.rectangle([lx * P, ly * P, (lx + bar_w) * P, (ly + 2) * P], fill=(40, 40, 40))
-    if filled > 0:
-        draw.rectangle([lx * P, ly * P, (lx + filled) * P, (ly + 2) * P], fill=color)
-    draw_text_px(draw, label, lx, ly - 5, color, scale=2)
-
-
-def make_frame(phase: str, t: float, ralph_x: int, af_x: int, bar_progress: float = 0.0) -> Image.Image:
-    """Render one animation frame."""
-    img = Image.new("RGB", (W, H))
+def draw_ralph(img: Image.Image, cx: float, cy: float, frame: int) -> None:
+    """Replicate JS drawRalph() exactly."""
     draw = ImageDraw.Draw(img)
-    draw_bg(draw)
+    p = P
+    t = math.sin(frame * 0.05) * p  # bob offset (float → round in fill_rect)
 
-    bob = int((t * 4 % 2 > 1))
-    flail = max(0.0, (t - 0.5) * 2) if phase == "clash" else 0.0
+    # HAIR
+    for dx, dy in [(-2, 0), (0, -1), (2, 0)]:
+        fill_rect(draw, cx + (dx - 1) * p, cy + dy * p + t, p, p * 2, hex_to_rgb('#4a2800'))
 
-    # Floor line
-    draw.line([0, H - 20, W, H - 20], fill=(40, 40, 40), width=2)
+    # HEAD yellow oval
+    fill_rect(draw, cx - 4*p, cy + 0*p + t, 8*p, p,   hex_to_rgb('#fbd800'))
+    for r in range(1, 6):
+        fill_rect(draw, cx - 5*p, cy + r*p + t, 10*p, p, hex_to_rgb('#fbd800'))
+    for r in range(6, 8):
+        fill_rect(draw, cx - 4*p, cy + r*p + t, 8*p,  p, hex_to_rgb('#fbd800'))
 
-    floor_y = (H - 20) // P  # logical pixel y for character feet
+    # EYES
+    fill_rect(draw, cx - 3*p, cy + 2*p + t, 2*p, 2*p, (255, 255, 255))
+    fill_rect(draw, cx + 1*p, cy + 2*p + t, 2*p, 2*p, (255, 255, 255))
+    fill_rect(draw, cx - 2*p, cy + 3*p + t, p,   p,   (0, 0, 0))
+    fill_rect(draw, cx + 2*p, cy + 3*p + t, p,   p,   (0, 0, 0))
 
-    if phase in ("idle", "clash", "results"):
-        draw_ralph(draw, ralph_x, floor_y, bob=bob, flail=flail)
-        draw_af(draw, af_x, floor_y, t * 6.28,
-                win=(phase == "results"))
+    # CONFUSED "?" expression (every 120 frames, first 40)
+    if frame % 120 < 40:
+        try:
+            font = ImageFont.truetype("/System/Library/Fonts/Monaco.ttf", p * 3)
+        except Exception:
+            font = ImageFont.load_default()
+        draw.text((cx + 4*p, cy - p + t - p*2), '?', fill=YELLOW, font=font)
 
-    # VS text in centre
-    cx_lx = W // (2 * P) - 2
-    vs_color = GREEN if phase == "idle" else RED
-    draw_text_px(draw, "VS", cx_lx, floor_y - 14, vs_color, scale=3)
+    # MOUTH
+    fill_rect(draw, cx - 2*p, cy + 6*p + t, 4*p, p,   (255, 255, 255))
+    fill_rect(draw, cx - 3*p, cy + 6*p + t, p,   p,   (204, 0, 0))
+    fill_rect(draw, cx + 2*p, cy + 6*p + t, p,   p,   (204, 0, 0))
 
-    # CLASH explosion
-    if phase == "clash" and t > 0.5:
-        import math
-        for i in range(12):
-            angle = i * (6.28 / 12) + t * 3
-            r = int(20 * (t - 0.5) * 2)
-            ex = W // 2 + int(math.cos(angle) * r * P)
-            ey = H // 2 + int(math.sin(angle) * r * P)
-            draw.ellipse([ex - 2, ey - 2, ex + 2, ey + 2],
-                         fill=[GREEN, CYAN, ORANGE, RED][i % 4])
+    # BODY - SHIRT
+    fill_rect(draw, cx - 4*p, cy + 8*p  + t, 8*p, 4*p, hex_to_rgb('#e63946'))
+    fill_rect(draw, cx - 6*p, cy + 9*p  + t, 2*p, 3*p, hex_to_rgb('#e63946'))
+    fill_rect(draw, cx + 4*p, cy + 9*p  + t, 2*p, 3*p, hex_to_rgb('#e63946'))
 
-    # Score bars in results phase
-    if phase == "results":
-        draw_score_bar(draw, 2, 3,  "RALPH  9.42", 9.42, 10.0, RED,    bar_progress)
-        draw_score_bar(draw, 2, 13, "AF     9.63", 9.63, 10.0, CYAN,   bar_progress)
+    # SHORTS
+    fill_rect(draw, cx - 4*p, cy + 12*p + t, 8*p, 4*p, hex_to_rgb('#3a86ff'))
 
-        winner_alpha = min(1.0, bar_progress * 2 - 1)
-        if winner_alpha > 0:
-            draw_text_px(draw, "AF WINS!", W // (2 * P) - 8, 3, CYAN, scale=3)
+    # LEGS
+    fill_rect(draw, cx - 3*p, cy + 16*p + t, 2*p, 4*p, hex_to_rgb('#fbd800'))
+    fill_rect(draw, cx + 1*p, cy + 16*p + t, 2*p, 4*p, hex_to_rgb('#fbd800'))
 
-    # Phase label (top right)
-    labels = {"idle": "READY", "clash": "FIGHT!", "results": "RESULT"}
-    draw_text_px(draw, labels.get(phase, ""), W // P - 15, 2, GREEN, scale=2)
+    # SHOES
+    fill_rect(draw, cx - 4*p, cy + 20*p + t, 3*p, p,   (0, 0, 0))
+    fill_rect(draw, cx + 1*p, cy + 20*p + t, 3*p, p,   (0, 0, 0))
+
+
+def draw_attractor_flow(img: Image.Image, cx: float, cy: float, frame: int) -> None:
+    """Replicate JS drawAttractorFlow() exactly."""
+    draw = ImageDraw.Draw(img)
+    p = P
+    t = frame * 0.03  # rotation angle
+
+    # HEXAGONAL BODY
+    pts = []
+    for i in range(6):
+        angle = (i * math.pi / 3) - math.pi / 2
+        r = 8 * p
+        pts.append((cx + r * math.cos(angle), cy + r * math.sin(angle) + p * 2))
+    draw.polygon(pts, fill=(0, 14, 20))
+
+    # CIRCUIT LINES
+    for lx, ly in [(cx - 4*p, cy), (cx + 4*p, cy), (cx, cy - 4*p), (cx, cy + 4*p)]:
+        draw.line([(cx, cy + p*2), (lx, ly + p*2)],
+                  fill=(0, 64, 64), width=1)
+
+    # SPIRAL EYE radial gradient
+    radial_glow(img, cx, cy + p*2, (255, 255, 255), (0, 255, 255), 5*p, steps=6)
+
+    # SPIRAL LINES
+    for i in range(3):
+        start = t + (i * math.pi * 2 / 3)
+        pts = []
+        r_base = (3 + i) * p * 0.7
+        for step in range(20):
+            a = start + (step / 19) * math.pi * 1.2
+            r = r_base
+            pts.append((cx + r * math.cos(a), cy + p*2 + r * math.sin(a)))
+        if len(pts) >= 2:
+            draw.line(pts, fill=CYAN, width=1)
+
+    # ORBITING PARTICLES
+    particles = [
+        (10*p, 1.2,  CYAN,   int(1.5*p)),
+        (13*p, -0.8, LIME,   p),
+        (8*p,  2.0,  ORANGE, p),
+    ]
+    for r, speed, color, size in particles:
+        angle = t * speed
+        px_pos = cx + r * math.cos(angle)
+        py_pos = cy + p*2 + r * math.sin(angle) * 0.5
+        # Outer glow
+        radial_glow(img, px_pos, py_pos, color, BG_COL, size * 2, steps=4)
+        # Solid centre
+        draw_circle(img, px_pos, py_pos, max(1, size), color, 1.0)
+
+    # λ READOUT (blink every 30 frames)
+    if (frame // 30) % 2 == 0:
+        try:
+            font = ImageFont.truetype("/System/Library/Fonts/Monaco.ttf", p * 2)
+        except Exception:
+            font = ImageFont.load_default()
+        draw.text((cx - 4*p, cy + 13*p), 'λ=-0.85', fill=LIME, font=font)
+
+
+# ── HP bars ───────────────────────────────────────────────────────────────────
+
+def draw_hp_bar(draw: ImageDraw.ImageDraw,
+                x: float, y: float, w: float,
+                label: str, score: float, max_score: float, color: tuple) -> None:
+    """Replicate JS drawHPBar()."""
+    pct = score / max_score
+    # Track
+    fill_rect(draw, x, y + 16, w, 10, (51, 51, 51))
+    # Fill
+    fill_rect(draw, x, y + 16, w * pct, 10, color)
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Monaco.ttf", 8)
+    except Exception:
+        font = ImageFont.load_default()
+    draw.text((x, y + 2), f"{label} {score:.2f}", fill=color, font=font)
+
+
+# ── scanlines ─────────────────────────────────────────────────────────────────
+
+def apply_scanlines(draw: ImageDraw.ImageDraw) -> None:
+    for y in range(0, H, 2):
+        draw.rectangle([0, y, W, y], fill=(0, 0, 0, 26))  # ~10% black
+
+
+# ── text helper ───────────────────────────────────────────────────────────────
+
+def draw_text_center(draw: ImageDraw.ImageDraw,
+                     text: str, y: float, size: int, color: tuple) -> None:
+    try:
+        font = ImageFont.truetype("/System/Library/Fonts/Monaco.ttf", size)
+    except Exception:
+        font = ImageFont.load_default()
+    bbox = draw.textbbox((0, 0), text, font=font)
+    tw = bbox[2] - bbox[0]
+    draw.text(((W - tw) // 2, y), text, fill=color, font=font)
+
+
+# ── frame renderer ────────────────────────────────────────────────────────────
+
+def render_frame(js_frame: int) -> Image.Image:
+    """Render one frame, replicating drawBattleFrame(frame) exactly."""
+    img = Image.new("RGB", (W, H), BG_COL)
+    draw = ImageDraw.Draw(img)
+
+    # GRID (very faint green)
+    grid_col = blend(BG_COL, GREEN, 0.05)
+    for x in range(0, W, 8):
+        draw.line([(x, 0), (x, H)], fill=grid_col)
+    for y in range(0, H, 8):
+        draw.line([(0, y), (W, y)], fill=grid_col)
+
+    # GROUND LINE
+    ground_col = blend(BG_COL, GREEN, 0.3)
+    draw.rectangle([0, H - 20, W, H - 18], fill=ground_col)
+
+    phase   = js_frame // 60
+    phase_t = (js_frame % 60) / 60
+
+    if phase == 0:
+        # IDLE — characters at their lanes
+        ralph_x = W * 0.2
+        af_x    = W * 0.8
+        draw_ralph(img, ralph_x, H * 0.55, js_frame)
+        draw_attractor_flow(img, af_x, H * 0.5, js_frame)
+        draw_hp_bar(draw, 30, 20, 160, 'RALPH', 9.42, 10, RED)
+        draw_hp_bar(draw, W - 190, 20, 160, 'AF', 9.63, 10, LIME)
+        draw_text_center(draw, 'VS', H // 2 + P * 2, P * 4, YELLOW)
+
+    elif phase == 1:
+        # CLASH — characters converge
+        ralph_x = W * 0.2 + (W * 0.3) * phase_t
+        af_x    = W * 0.8 - (W * 0.3) * phase_t
+        # Ralph trips near the end
+        draw_ralph(img, ralph_x, H * 0.55, js_frame)
+        draw_attractor_flow(img, af_x, H * 0.5, js_frame)
+        # CLASH! text + particle burst
+        if phase_t > 0.8:
+            clash_alpha = 1 - ((phase_t - 0.8) / 0.2)
+            col = blend(BG_COL, YELLOW, clash_alpha)
+            draw_text_center(draw, 'CLASH!', int(H * 0.4), P * 6, col)
+            for i in range(8):
+                angle = (i / 8) * math.pi * 2
+                r = 30 * (phase_t - 0.8) / 0.2
+                ex = int(W / 2 + r * math.cos(angle))
+                ey = int(H * 0.5 + r * math.sin(angle))
+                c = [RED, YELLOW, CYAN, ORANGE][i % 4]
+                draw.ellipse([ex - 4, ey - 4, ex + 4, ey + 4], fill=c)
+
+    else:
+        # RESULTS
+        ralph_x = W * 0.22
+        af_x    = W * 0.78
+        draw_ralph(img, ralph_x, H * 0.55, js_frame)
+        draw_attractor_flow(img, af_x, H * 0.5, js_frame)
+        score_progress = min(1.0, phase_t * 3)
+        draw_hp_bar(draw, 30, 20, 160, 'RALPH', 9.42 * score_progress, 10, RED)
+        draw_hp_bar(draw, W - 190, 20, 160, 'AF', 9.63 * score_progress, 10, LIME)
+        draw_text_center(draw, 'ATTRACTOR EDGES IT!', int(H * 0.15), P * 3,
+                         blend(BG_COL, LIME, 0.9))
+        draw_text_center(draw, 'p=0.480 ns  d=0.17', int(H * 0.25), P * 2, YELLOW)
+
+    # SCANLINES
+    for y in range(0, H, 2):
+        draw.rectangle([0, y, W, y], fill=(0, 0, 0))
+        # blend 10% black onto every even row
+        # (PIL RGBA compositing would be cleaner; approximate with dim line)
+    # Re-draw a faint dark stripe — skip full re-render, just dim
+    scanline_overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    so_draw = ImageDraw.Draw(scanline_overlay)
+    for y in range(0, H, 2):
+        so_draw.rectangle([0, y, W - 1, y], fill=(0, 0, 0, 26))
+    img_rgba = img.convert("RGBA")
+    img_rgba = Image.alpha_composite(img_rgba, scanline_overlay)
+    img = img_rgba.convert("RGB")
 
     return img
 
 
+# ── main ──────────────────────────────────────────────────────────────────────
+
 def generate_gif():
-    import math
-
     frames: list[Image.Image] = []
-    total_frames = 48  # 4 s at 12 fps
-
-    for i in range(total_frames):
-        t = i / total_frames  # 0..1
-
-        # Phase split: 0-0.3 idle, 0.3-0.6 clash, 0.6-1.0 results
-        if t < 0.30:
-            phase = "idle"
-            local_t = t / 0.30
-            ralph_x = 15
-            af_x    = W // P - 20
-        elif t < 0.60:
-            phase = "clash"
-            local_t = (t - 0.30) / 0.30
-            # Characters converge toward centre
-            ralph_x = int(15 + (W // (2 * P) - 25) * local_t)
-            af_x    = int((W // P - 20) - (W // (2 * P) - 25) * local_t)
-        else:
-            phase = "results"
-            local_t = (t - 0.60) / 0.40
-            ralph_x = W // (2 * P) - 15
-            af_x    = W // (2 * P) + 5
-
-        frame = make_frame(phase, local_t, ralph_x, af_x, bar_progress=local_t if phase == "results" else 0.0)
-        frames.append(frame)
+    js_frames = range(0, TOTAL_JS, SAMPLE_STEP)
+    total = len(list(js_frames))
+    for i, jf in enumerate(range(0, TOTAL_JS, SAMPLE_STEP)):
+        frames.append(render_frame(jf))
+        print(f"\r  Rendering frame {i+1}/{total}...", end="", flush=True)
+    print()
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     frames[0].save(
@@ -276,11 +338,11 @@ def generate_gif():
         save_all=True,
         append_images=frames[1:],
         loop=0,
-        duration=DURATION,
+        duration=MS_PER_FRAME,
         optimize=False,
     )
     size_kb = OUT_PATH.stat().st_size // 1024
-    print(f"Saved {OUT_PATH} ({len(frames)} frames, {size_kb} KB)")
+    print(f"Saved {OUT_PATH}  ({len(frames)} frames · {W}×{H} · {size_kb} KB)")
 
 
 if __name__ == "__main__":
