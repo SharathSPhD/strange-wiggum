@@ -200,7 +200,8 @@ def _run_tests(test_code: str, solution_output: str) -> bool:
 
         try:
             proc = subprocess.run(
-                [sys.executable, "-m", "pytest", test_path, "-x", "-q", "--tb=no"],
+                [sys.executable, "-m", "pytest", test_path, "-x", "-q", "--tb=no",
+                 "--asyncio-mode=auto"],
                 cwd=tmpdir,
                 capture_output=True,
                 text=True,

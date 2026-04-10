@@ -206,7 +206,8 @@ def finalize_attractor_trial(
     if os.path.exists(test_file) and solution_code:
         try:
             proc = subprocess.run(
-                [sys.executable, "-m", "pytest", "test_solution.py", "-x", "-q", "--tb=short"],
+                [sys.executable, "-m", "pytest", "test_solution.py", "-x", "-q", "--tb=short",
+                 "--asyncio-mode=auto"],
                 cwd=temp_dir,
                 capture_output=True,
                 text=True,

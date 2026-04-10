@@ -1,7 +1,7 @@
 # Ralph vs AttractorFlow — Benchmark Leaderboard
 
-> Generated: 2026-04-10 08:03 UTC
-> Tasks: 6 · Reps: 3 · Conditions: 3 · Total trials: 36
+> Generated: 2026-04-10 08:58 UTC
+> Tasks: 6 · Reps: 4 · Conditions: 3 · Total trials: 38
 > Quality score: 0–10 (LLM-judged, blinded) | Coding tasks: +2 bonus for passing tests (cap 10)
 
 ---
@@ -10,28 +10,30 @@
 
 | Rank | Condition | Quality μ | σ | 95% CI | vs. Ralph p | Cohen's d |
 |------|-----------|-----------|---|--------|-------------|-----------|
-| 🥇 | **AttractorFlow** | 9.61 | 0.61 | [9.33, 9.83] | 0.481 ns | +0.17 |
-| 🥈 | **Ralph** | 9.39 | 1.24 | [8.72, 9.83] | — | — |
+| 🥇 | **AttractorFlow** | 9.63 | 0.60 | [9.37, 9.89] | 0.480 ns | +0.17 |
+| 🥈 | **Ralph** | 9.42 | 1.22 | [8.79, 9.84] | — | — |
 
 > \* p < 0.0167 (Bonferroni-adjusted α for 3 comparisons), \*\* p < 0.0003, \*\*\* p < 0.00003
 
 
-## ANOVA
+## Repeated-Measures ANOVA
 
-ERROR: Need 3 conditions, found ['attractor', 'ralph']
+**F(1, 18) = 0.520**, p = 0.480, partial η² = 0.013
+
+Greehouse-Geisser correction: ε = 1.000, p (corrected) = nan
 
 
 ## Pairwise Comparisons (Bonferroni-corrected)
 
 | Comparison | Δμ | 95% CI | t | p (raw) | p (Bonf.) | Cohen's d | Sig. |
 |------------|-----|--------|---|---------|-----------|-----------|------|
-| Ralph vs AttractorFlow | -0.22 | [-0.89, 0.22] | -0.72 | 0.481 | 0.481 | -0.17 | ✓ |
+| Ralph vs AttractorFlow | -0.21 | [-0.84, 0.26] | -0.72 | 0.480 | 0.480 | -0.17 | ✗ |
 
 
 ## Normality (Shapiro-Wilk)
 
-- **AttractorFlow**: W = 0.6620, p = < 0.001 ← **non-normal**
-- **Ralph**: W = 0.5583, p = < 0.001 ← **non-normal**
+- **AttractorFlow**: W = 0.6467, p = < 0.001 ← **non-normal**
+- **Ralph**: W = 0.5433, p = < 0.001 ← **non-normal**
 
 
 ## Subgroup Analysis (Coding vs Analysis Tasks)
@@ -39,47 +41,47 @@ ERROR: Need 3 conditions, found ['attractor', 'ralph']
 | Category | F | p | partial η² | N tasks |
 |----------|---|---|------------|---------|
 | Analysis | 0.000 | 1.000 | 0.000 | 1 |
-| Coding | 0.554 | 0.469 | 0.018 | 5 |
+| Coding | 0.556 | 0.468 | 0.017 | 5 |
 
 
 ## Efficiency Metrics
 
 | Condition | Avg Iterations | Avg Tokens | Avg AF Interventions | Avg Time (s) |
 |-----------|----------------|------------|----------------------|--------------|
-| AttractorFlow | 3.4 | 613 | 0.4 | 82.2 |
-| Ralph | 1.2 | 2163 | N/A | 75.9 |
+| AttractorFlow | 3.3 | 601 | 0.4 | 80.4 |
+| Ralph | 1.2 | 2146 | N/A | 82.8 |
 
 
 ## AttractorFlow Regime Distribution
 
 | Final Regime | % of Trials | Avg Quality |
 |--------------|-------------|-------------|
-| CONVERGING | 94.4% | 9.71 |
-| DIVERGING | 5.6% | 8.00 |
+| CONVERGING | 94.7% | 9.72 |
+| DIVERGING | 5.3% | 8.00 |
 
 
 ## Per-Task Results
 
-| Task | Category | Ralph μ | AttractorFlow μ | Combined μ | Best |
-|------|----------|---------|-----------------|------------|------|
-| A01 | analysis | 9.00 | 9.00 | nan | AttractorFlow |
-| C02 | coding | 9.33 | 9.33 | nan | AttractorFlow |
-| C08 | coding | 9.67 | 9.67 | nan | AttractorFlow |
-| H01 | coding | 10.00 | 10.00 | nan | AttractorFlow |
-| H02 | coding | 8.33 | 10.00 | nan | AttractorFlow |
-| H03 | coding | 10.00 | 9.67 | nan | Ralph |
+| Task | Category | Ralph μ | AttractorFlow μ | Winner |
+|------|----------|---------|-----------------|--------|
+| A01 | analysis | 9.00 | 9.00 | TIE |
+| C02 | coding | 9.33 | 9.33 | TIE |
+| C08 | coding | 9.67 | 9.67 | TIE |
+| H01 | coding | 10.00 | 10.00 | TIE |
+| H02 | coding | 8.75 | 10.00 | AttractorFlow |
+| H03 | coding | 10.00 | 9.67 | Ralph |
 
 
 ## Statistical Notes
 
 
-> **Judge consistency (ICC2):** -0.079  95%CI [-0.320, 0.350]  p = 0.649
+> **Judge consistency (ICC2):** 0.000  95%CI [-0.310, 1.000]  p = 0.391
 
 
-> **λ vs Quality:** Pearson r = -0.464, p = 0.052, n = 18
+> **λ vs Quality:** Pearson r = -0.418, p = 0.075, n = 19
 
 
-> **Post-hoc power:** N/condition = 18, observed F = 0.000, approx. power = 5.00%
+> **Post-hoc power:** N/condition = 19, observed F = 0.520, approx. power = 12.33%
 
 
 ---
@@ -88,16 +90,17 @@ ERROR: Need 3 conditions, found ['attractor', 'ralph']
 
 | Parameter | Value |
 |-----------|-------|
-| Design | Within-subjects (all 3 conditions per task) |
-| Tasks | 15 (8 coding + 7 analysis) |
-| Reps | 3 per task per condition |
-| Total trials | 135 |
+| Design | Within-subjects (2 conditions per task) |
+| Conditions | AttractorFlow + Ralph |
+| Tasks | 6 |
+| Reps | 4 per task per condition |
+| Total trials | 38 |
 | Primary analysis | Repeated-measures ANOVA |
 | Sphericity | Mauchly's test; Greenhouse-Geisser correction if violated |
-| Post-hoc | Pairwise t-tests, Bonferroni α_adj = 0.0167 |
+| Post-hoc | Pairwise t-tests, Bonferroni α_adj = 0.05 |
 | Bootstrap | 10,000 iterations, seed = 42 |
 | Effect sizes | Cohen's d (pairwise), partial η² (ANOVA) |
-| Judge | Claude (temperature=0, blinded outputs) |
+| Judge | Claude claude-sonnet-4-6 (blinded outputs) |
 | Blinding | UUID-named output files; condition hidden from judge |
 
 *Generated by `benchmark/report.py`*

@@ -13,6 +13,7 @@ import os
 import re
 
 from benchmark import cli_runner
+from benchmark.config import MODEL
 
 _RUBRIC_PATH = os.path.join(os.path.dirname(__file__), "rubric.md")
 with open(_RUBRIC_PATH) as f:
@@ -56,7 +57,7 @@ Return ONLY a valid JSON object with exactly these keys:
 No other text. No markdown fences. Just the JSON object.
 """
 
-    cli_result = cli_runner.call_claude(prompt)
+    cli_result = cli_runner.call_claude(prompt, model=MODEL)
 
     if cli_result["error"]:
         return {

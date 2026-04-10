@@ -493,5 +493,15 @@
     "task_id": "A01",
     "condition": "attractor",
     "rep": 2
+  },
+  "d82df3da": {
+    "task_id": "H02",
+    "condition": "ralph",
+    "rep": 3
+  },
+  "924e1efd": {
+    "task_id": "H02",
+    "condition": "attractor",
+    "rep": 3
   }
 }

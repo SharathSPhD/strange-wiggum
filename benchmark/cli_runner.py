@@ -61,8 +61,8 @@ def call_claude(prompt: str, *, model: str | None = None) -> dict:
     ]
 
     for attempt in range(CLI_MAX_RETRIES):
-        # Delay: base delay on first attempt, exponential on retries
-        delay = CLI_DELAY_SECONDS if attempt == 0 else CLI_DELAY_SECONDS * (2 ** attempt)
+        # Delay: no sleep on first attempt; exponential backoff on retries only
+        delay = 0 if attempt == 0 else min(CLI_DELAY_SECONDS * (2 ** (attempt - 1)), 60)
         time.sleep(delay)
 
         try:

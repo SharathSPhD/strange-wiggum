@@ -97,11 +97,6 @@ def run_rm_anova(df: pd.DataFrame, dv: str = "quality_score") -> dict:
 
     result = {}
 
-    # Pivot to wide for sphericity test
-    wide = df.pivot_table(index="subject", columns="condition", values=dv, aggfunc="first")
-    if wide.shape[1] < 3:
-        return {"error": f"Need 3 conditions, found {list(wide.columns)}"}
-
     # Mauchly's sphericity (pingouin)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -156,7 +151,7 @@ def run_pairwise(df: pd.DataFrame, dv: str = "quality_score") -> list[dict]:
             "t_stat": float(t_stat),
             "p_value": float(p_val),
             "p_bonferroni": float(min(p_val * len(pairs), 1.0)),
-            "significant": p_val < alpha_adj,
+            "significant": bool(p_val < alpha_adj),
             "cohen_d": d,
             "alpha_bonferroni": alpha_adj,
         })
