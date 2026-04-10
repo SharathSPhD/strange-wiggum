@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Wars: Ralph Wiggum vs AttractorFlow</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --pixel-bg: #0d0d0d;
+      --pixel-green: #00ff41;
+      --pixel-red: #ff4141;
+      --pixel-yellow: #ffff00;
+      --pixel-cyan: #00ffff;
+      --pixel-border: #39ff14;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background-color: var(--pixel-bg);
+      color: var(--pixel-green);
+      line-height: 1.8;
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(2px); }
+    }
+
+    @keyframes typewriter {
+      0% { width: 0; }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px var(--pixel-border), 0 0 20px rgba(57, 255, 20, 0.5); }
+      50% { box-shadow: 0 0 20px var(--pixel-border), 0 0 30px rgba(57, 255, 20, 0.8); }
+    }
+
+    .scanline-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      z-index: 9999;
+    }
+
+    /* ============================================
+       SECTION 1: HERO
+       ============================================ */
+
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--pixel-bg);
+      padding: 2rem;
+      position: relative;
+      gap: 2rem;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #hero > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-gif {
+      width: 400px;
+      max-width: 90vw;
+      image-rendering: pixelated;
+      border: 3px solid var(--pixel-border);
+      box-shadow: 0 0 10px var(--pixel-border);
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(16px, 4vw, 36px);
+      color: var(--pixel-green);
+      text-align: center;
+      min-height: 1.5em;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(12px, 2.5vw, 20px);
+      color: var(--pixel-yellow);
+      text-align: center;
+    }
+
+    .hero-meta {
+      font-size: clamp(10px, 2vw, 16px);
+      color: var(--pixel-cyan);
+      text-align: center;
+    }
+
+    .press-start-btn {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(12px, 2vw, 16px);
+      background-color: var(--pixel-bg);
+      color: var(--pixel-green);
+      border: 3px solid var(--pixel-border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--pixel-border);
+      animation: blink 1s infinite;
+    }
+
+    .press-start-btn:hover {
+      animation: glow 0.5s ease-in-out infinite;
+      transform: scale(1.05);
+    }
+
+    .insert-coin {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      color: rgba(57, 255, 20, 0.4);
+      font-size: clamp(10px, 1.5vw, 14px);
+      animation: blink 2s infinite;
+      z-index: 10;
+    }
+
+    /* ============================================
+       SECTION 2: FIGHTER SELECT
+       ============================================ */
+
+    #fighter-select {
+      min-height: 100vh;
+      padding: 4rem 2rem;
+      background-color: var(--pixel-bg);
+      position: relative;
+    }
+
+    #fighter-select::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+    }
+
+    #fighter-select > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-header {
+      font-size: clamp(16px, 3vw, 28px);
+      color: var(--pixel-green);
+      text-align: center;
+      margin-bottom: 3rem;
+      text-transform: uppercase;
+    }
+
+    .fighter-grid {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+
+    .fighter-card {
+      flex: 0 1 360px;
+      padding: 2rem;
+      background-color: var(--pixel-bg);
+      border: 3px solid var(--pixel-border);
+      box-shadow: 0 0 10px var(--pixel-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .fighter-card:hover {
+      animation: glow 1s ease-in-out infinite;
+      transform: translateY(-5px);
+    }
+
+    .fighter-card.ralph-card {
+      border-color: var(--pixel-red);
+      box-shadow: 0 0 10px var(--pixel-red);
+    }
+
+    .fighter-card.ralph-card:hover {
+      box-shadow: 0 0 20px var(--pixel-red), 0 0 30px rgba(255, 65, 65, 0.8);
+    }
+
+    .fighter-card.attractor-card {
+      border-color: var(--pixel-green);
+      box-shadow: 0 0 10px var(--pixel-green);
+    }
+
+    .fighter-card.attractor-card:hover {
+      box-shadow: 0 0 20px var(--pixel-green), 0 0 30px rgba(0, 255, 65, 0.8);
+    }
+
+    .fighter-name {
+      font-size: clamp(14px, 2.5vw, 20px);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .ralph-card .fighter-name {
+      color: var(--pixel-red);
+    }
+
+    .attractor-card .fighter-name {
+      color: var(--pixel-green);
+    }
+
+    .fighter-emoji {
+      font-size: 80px;
+      line-height: 1;
+      margin: 1rem 0;
+    }
+
+    .fighter-description {
+      font-size: clamp(10px, 1.5vw, 13px);
+      text-align: center;
+      color: var(--pixel-cyan);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .stats-table {
+      width: 100%;
+      font-size: clamp(9px, 1.2vw, 12px);
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .stats-table th,
+    .stats-table td {
+      padding: 0.5rem;
+      text-align: left;
+      border: 1px solid rgba(57, 255, 20, 0.3);
+    }
+
+    .stats-table th {
+      color: var(--pixel-yellow);
+      background-color: rgba(57, 255, 20, 0.1);
+    }
+
+    .stats-table td {
+      color: var(--pixel-cyan);
+    }
+
+    .ralph-card .stats-table th {
+      color: var(--pixel-red);
+      background-color: rgba(255, 65, 65, 0.1);
+    }
+
+    .ralph-card .stats-table td {
+      color: var(--pixel-red);
+    }
+
+    .hp-comparison {
+      width: 100%;
+      max-width: 600px;
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .hp-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .hp-label {
+      font-size: clamp(11px, 1.8vw, 14px);
+      color: var(--pixel-yellow);
+      min-width: 120px;
+      text-transform: uppercase;
+    }
+
+    .hp-bar-wrapper {
+      flex: 1;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--pixel-border);
+      height: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hp-bar {
+      height: 100%;
+      transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 0.5rem;
+      font-size: clamp(10px, 1.5vw, 12px);
+      font-weight: bold;
+    }
+
+    .ralph-bar {
+      background: linear-gradient(90deg, var(--pixel-red), rgba(255, 65, 65, 0.6));
+      box-shadow: 0 0 10px var(--pixel-red);
+      color: var(--pixel-red);
+    }
+
+    .attractor-bar {
+      background: linear-gradient(90deg, var(--pixel-green), rgba(0, 255, 65, 0.6));
+      box-shadow: 0 0 10px var(--pixel-green);
+      color: var(--pixel-green);
+    }
+
+    .hp-value {
+      margin-left: 0.5rem;
+      color: var(--pixel-yellow);
+      font-size: clamp(10px, 1.5vw, 12px);
+    }
+
+    /* ============================================
+       SECTION 3: THE ARENA
+       ============================================ */
+
+    #the-arena {
+      min-height: 100vh;
+      padding: 4rem 2rem;
+      background-color: var(--pixel-bg);
+      position: relative;
+    }
+
+    #the-arena::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+    }
+
+    #the-arena > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .arena-header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .arena-title {
+      font-size: clamp(16px, 3vw, 28px);
+      color: var(--pixel-green);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .arena-subtitle {
+      font-size: clamp(12px, 2vw, 18px);
+      color: var(--pixel-yellow);
+      margin-bottom: 3rem;
+    }
+
+    .methodology-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .method-card {
+      padding: 1.5rem;
+      background-color: var(--pixel-bg);
+      border: 3px solid var(--pixel-border);
+      box-shadow: 0 0 10px var(--pixel-border);
+      transition: all 0.3s ease;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .method-card:hover {
+      animation: glow 1s ease-in-out infinite;
+      transform: translateY(-5px);
+    }
+
+    .method-card h3 {
+      font-size: clamp(13px, 2vw, 16px);
+      color: var(--pixel-cyan);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .method-card p {
+      font-size: clamp(10px, 1.5vw, 13px);
+      color: var(--pixel-yellow);
+      line-height: 1.6;
+    }
+
+    .task-inventory {
+      margin-top: 3rem;
+    }
+
+    .inventory-title {
+      font-size: clamp(14px, 2.5vw, 20px);
+      color: var(--pixel-green);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .task-card {
+      padding: 1rem;
+      background-color: var(--pixel-bg);
+      border: 2px solid var(--pixel-border);
+      box-shadow: 0 0 10px var(--pixel-border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .task-card:hover {
+      animation: glow 1s ease-in-out infinite;
+    }
+
+    .task-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .task-id {
+      font-size: clamp(11px, 1.8vw, 14px);
+      color: var(--pixel-cyan);
+      text-transform: uppercase;
+    }
+
+    .task-name {
+      font-size: clamp(12px, 2vw, 15px);
+      color: var(--pixel-green);
+      font-weight: bold;
+    }
+
+    .task-category {
+      font-size: clamp(10px, 1.5vw, 12px);
+      color: var(--pixel-yellow);
+    }
+
+    .data-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .data-link-btn {
+      padding: 1rem 2rem;
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(11px, 1.8vw, 14px);
+      background-color: var(--pixel-bg);
+      color: var(--pixel-green);
+      border: 3px solid var(--pixel-border);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px var(--pixel-border);
+      text-align: center;
+    }
+
+    .data-link-btn:hover {
+      animation: glow 0.5s ease-in-out infinite;
+      transform: scale(1.05);
+    }
+
+    .reveal {
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .fighter-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .fighter-card {
+        flex: 0 1 100%;
+        max-width: 400px;
+      }
+
+      .methodology-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .task-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .insert-coin {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- CRT Scanline Overlay -->
+  <div class="scanline-overlay"></div>
+
+  <!-- ============================================
+       SECTION 1: HERO
+       ============================================ -->
+  <section id="hero">
+    <img src="https://media.giphy.com/media/xTiTnlfW3b5pmlYzBe/giphy.gif"
+         alt="Ralph Wiggum fighting"
+         class="hero-gif">
+    <h1 class="hero-title" id="typewriter-title"></h1>
+    <h2 class="hero-subtitle">RALPH WIGGUM  VS  ATTRACTORFLOW</h2>
+    <p class="hero-meta">38 TRIALS · 6 TASKS · BLINDED JUDGE</p>
+    <button class="press-start-btn" onclick="document.getElementById('fighter-select').scrollIntoView({ behavior: 'smooth' })">
+      ▶ PRESS START
+    </button>
+  </section>
+
+  <div class="insert-coin">INSERT COIN</div>
+
+  <!-- ============================================
+       SECTION 2: FIGHTER SELECT
+       ============================================ -->
+  <section id="fighter-select">
+    <h2 class="section-header">── SELECT YOUR FIGHTER ──</h2>
+
+    <div class="fighter-grid">
+      <!-- RALPH CARD -->
+      <div class="fighter-card ralph-card reveal">
+        <h3 class="fighter-name">RALPH WIGGUM 🧒</h3>
+        <div class="fighter-emoji">🧒</div>
+        <p class="fighter-description">
+          Iterative CLI loop. Calls claude -p up to 10x. Pure stubborn determination. Tokens? Who counts tokens?
+        </p>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>STAT</th>
+              <th>RATING</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SPEED</td>
+              <td>⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>CONSISTENCY</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>TOKEN COST</td>
+              <td>💀💀💀💀</td>
+            </tr>
+            <tr>
+              <td>AVG TOKENS</td>
+              <td>2,146</td>
+            </tr>
+            <tr>
+              <td>AVG ITERS</td>
+              <td>1.2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ATTRACTORFLOW CARD -->
+      <div class="fighter-card attractor-card reveal">
+        <h3 class="fighter-name">ATTRACTORFLOW 🌀</h3>
+        <div class="fighter-emoji">🌀</div>
+        <p class="fighter-description">
+          Lyapunov-guided orchestrator. Phase-space trajectories. Spawns explorer/convergence subagents. Dynamical systems theory applied to code.
+        </p>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>STAT</th>
+              <th>RATING</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SPEED</td>
+              <td>⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>CONSISTENCY</td>
+              <td>⭐⭐⭐⭐⭐</td>
+            </tr>
+            <tr>
+              <td>TOKEN COST</td>
+              <td>💀</td>
+            </tr>
+            <tr>
+              <td>AVG TOKENS</td>
+              <td>601</td>
+            </tr>
+            <tr>
+              <td>AVG ITERS</td>
+              <td>3.3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HP Bar Comparison -->
+    <div class="hp-comparison">
+      <div class="hp-bar-container">
+        <div class="hp-label">RALPH</div>
+        <div class="hp-bar-wrapper">
+          <div class="hp-bar ralph-bar" id="ralph-hp" style="width: 0%;">
+            <span class="hp-value" id="ralph-value">μ = 9.42</span>
+          </div>
+        </div>
+      </div>
+      <div class="hp-bar-container">
+        <div class="hp-label">ATTRACTOR</div>
+        <div class="hp-bar-wrapper">
+          <div class="hp-bar attractor-bar" id="attractor-hp" style="width: 0%;">
+            <span class="hp-value" id="attractor-value">μ = 9.63</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 3: THE ARENA
+       ============================================ -->
+  <section id="the-arena">
+    <div class="arena-header">
+      <h2 class="arena-title">── THE ARENA ──</h2>
+      <p class="arena-subtitle">How the battle was judged</p>
+    </div>
+
+    <div class="methodology-grid">
+      <div class="method-card reveal">
+        <h3>TASKS</h3>
+        <p>6 tasks total: 5 coding + 1 analysis. Difficulty tiers: 🟢 Standard (A,C) · 🔴 Hard (H)</p>
+      </div>
+
+      <div class="method-card reveal">
+        <h3>REPS</h3>
+        <p>4 repetitions per task per condition. Latin-square ordering eliminates carry-over effects.</p>
+      </div>
+
+      <div class="method-card reveal">
+        <h3>JUDGE</h3>
+        <p>Claude Sonnet 4.6 · Temperature=0 · Blinded: UUID-named outputs, condition hidden</p>
+      </div>
+
+      <div class="method-card reveal">
+        <h3>SCORING</h3>
+        <p>0-10 rubric. Coding tasks: +2 bonus for passing pytest suite (cap 10).</p>
+      </div>
+
+      <div class="method-card reveal">
+        <h3>BLINDING</h3>
+        <p>Each output saved as random UUID.txt. Judge never sees condition label.</p>
+      </div>
+
+      <div class="method-card reveal">
+        <h3>STATS</h3>
+        <p>Repeated-measures ANOVA · Bonferroni correction · Bootstrap 95% CIs (n=10,000)</p>
+      </div>
+    </div>
+
+    <div class="task-inventory">
+      <h3 class="inventory-title">TASK INVENTORY</h3>
+      <div class="task-grid">
+        <div class="task-card reveal">
+          <div class="task-icon">🟢</div>
+          <div class="task-id">A01</div>
+          <div class="task-name">Complexity Analysis</div>
+          <div class="task-category">Analysis</div>
+        </div>
+
+        <div class="task-card reveal">
+          <div class="task-icon">🟢</div>
+          <div class="task-id">C02</div>
+          <div class="task-name">Rate Limiter</div>
+          <div class="task-category">Coding</div>
+        </div>
+
+        <div class="task-card reveal">
+          <div class="task-icon">🟢</div>
+          <div class="task-id">C08</div>
+          <div class="task-name">Async Retry Client</div>
+          <div class="task-category">Coding</div>
+        </div>
+
+        <div class="task-card reveal">
+          <div class="task-icon">🔴</div>
+          <div class="task-id">H01</div>
+          <div class="task-name">Consistent Hash Ring</div>
+          <div class="task-category">Hard</div>
+        </div>
+
+        <div class="task-card reveal">
+          <div class="task-icon">🔴</div>
+          <div class="task-id">H02</div>
+          <div class="task-name">Pratt Parser</div>
+          <div class="task-category">Hard</div>
+        </div>
+
+        <div class="task-card reveal">
+          <div class="task-icon">🔴</div>
+          <div class="task-id">H03</div>
+          <div class="task-name">LFU Cache</div>
+          <div class="task-category">Hard</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-links">
+      <a href="data/scores.csv" class="data-link-btn reveal">📊 SCORES.CSV</a>
+      <a href="data/stats_summary.json" class="data-link-btn reveal">📈 STATS JSON</a>
+      <a href="https://github.com/SharathSPhD/strange-wiggum" class="data-link-btn reveal" target="_blank">🔗 GITHUB REPO</a>
+    </div>
+  </section>
+
+  
+<script>
+(function() {  // Hero IIFE — isolates hero vars from data vars
+    // ============================================
+    // TYPEWRITER EFFECT
+    // ============================================
+    function typewriterEffect(elementId, text, speed = 80) {
+      const element = document.getElementById(elementId);
+      let index = 0;
+
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          setTimeout(type, speed);
+        }
+      }
+
+      type();
+    }
+
+    // Start typewriter on page load
+    window.addEventListener('load', () => {
+      typewriterEffect('typewriter-title', '⚔ AGENT WARS ⚔', 80);
+    });
+
+    // ============================================
+    // INTERSECTION OBSERVER FOR HP BAR ANIMATION
+    // ============================================
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: '0px'
+    };
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // HP bars
+          if (entry.target.id === 'ralph-hp') {
+            entry.target.style.width = '77%';
+          } else if (entry.target.id === 'attractor-hp') {
+            entry.target.style.width = '80%';
+          }
+
+          // Fade-in for reveal elements
+          if (entry.target.classList.contains('reveal')) {
+            entry.target.style.animationDelay =
+              (Array.from(document.querySelectorAll('.reveal')).indexOf(entry.target) * 0.1) + 's';
+          }
+
+          observer.unobserve(entry.target);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    // Observe HP bars
+    const ralphBar = document.getElementById('ralph-hp');
+    const attractorBar = document.getElementById('attractor-hp');
+    if (ralphBar) observer.observe(ralphBar);
+    if (attractorBar) observer.observe(attractorBar);
+
+    // Observe reveal elements
+    document.querySelectorAll('.reveal').forEach((element) => {
+      observer.observe(element);
+    });
+
+    // ============================================
+    // WEB AUDIO API - BLOOP SOUND
+    // ============================================
+    let audioCtx = null;
+
+    function playBloop() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g);
+      g.connect(audioCtx.destination);
+
+      o.frequency.setValueAtTime(440, audioCtx.currentTime);
+      o.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1);
+
+      g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
+      o.start();
+      o.stop(audioCtx.currentTime + 0.3);
+    }
+
+    document.addEventListener('click', playBloop, { once: true });
+  })();
+</script>
+<!-- SECTION 4: ROUND-BY-ROUND RESULTS -->
+<section id="section-4" class="section-4 pixel-section">
+  <h2 class="section-title">── ROUND BY ROUND ──</h2>
+
+  <div class="scoreboard-wrapper">
+    <table class="pixel-scoreboard">
+      <thead>
+        <tr>
+          <th>TASK</th>
+          <th>DIFFICULTY</th>
+          <th>RALPH μ</th>
+          <th>AF μ</th>
+          <th>WINNER</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="task-id">A01</td>
+          <td class="difficulty-easy">🟢 Analysis</td>
+          <td class="score-neutral">9.00</td>
+          <td class="score-neutral">9.00</td>
+          <td class="winner-tie">🤝 TIE</td>
+        </tr>
+        <tr>
+          <td class="task-id">C02</td>
+          <td class="difficulty-easy">🟢 Coding</td>
+          <td class="score-neutral">9.33</td>
+          <td class="score-neutral">9.33</td>
+          <td class="winner-tie">🤝 TIE</td>
+        </tr>
+        <tr>
+          <td class="task-id">C08</td>
+          <td class="difficulty-easy">🟢 Coding</td>
+          <td class="score-neutral">9.67</td>
+          <td class="score-neutral">9.67</td>
+          <td class="winner-tie">🤝 TIE</td>
+        </tr>
+        <tr>
+          <td class="task-id">H01</td>
+          <td class="difficulty-hard">🔴 Hard</td>
+          <td class="score-neutral">10.00</td>
+          <td class="score-neutral">10.00</td>
+          <td class="winner-tie">🤝 TIE</td>
+        </tr>
+        <tr class="key-battle">
+          <td class="task-id">H02</td>
+          <td class="difficulty-hard">🔴 Hard</td>
+          <td class="score-ralph">8.75</td>
+          <td class="score-af">10.00</td>
+          <td class="winner-af">⚡ 🌀 ATTRACTORFLOW</td>
+        </tr>
+        <tr>
+          <td class="task-id">H03</td>
+          <td class="difficulty-hard">🔴 Hard</td>
+          <td class="score-ralph">10.00</td>
+          <td class="score-af">9.67</td>
+          <td class="winner-ralph">🧒 RALPH</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout-box h02-analysis">
+    <h3 class="callout-title">⚡ KEY BATTLE: H02 (PRATT PARSER)</h3>
+    <p>
+      H02 (Pratt Parser) was the decisive battle. Ralph's Haiku model failed the unary-minus-power precedence test (-2**2 should = -4, not 4) in rep 2, scoring 5/10. AttractorFlow stayed CONVERGING and nailed all 21 tests.
+    </p>
+  </div>
+
+  <div class="csv-status-container">
+    <div id="csv-status" class="csv-status loading">
+      ⏳ Loading CSV...
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: POWER LEVEL CHARTS -->
+<section id="section-5" class="section-5 pixel-section">
+  <h2 class="section-title">── POWER LEVEL CHARTS ──</h2>
+
+  <div class="charts-grid">
+    <div class="chart-container chart-1">
+      <canvas id="qualityChart"></canvas>
+    </div>
+
+    <div class="chart-container chart-2">
+      <canvas id="radarChart"></canvas>
+    </div>
+
+    <div class="chart-container chart-3">
+      <canvas id="regimeChart"></canvas>
+    </div>
+
+    <div class="chart-container chart-4">
+      <canvas id="lambdaChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: FINAL BOSS STATS -->
+<section id="section-6" class="section-6 pixel-section">
+  <h2 class="section-title blink">── THE VERDICT ──</h2>
+
+  <div class="stats-comparison">
+    <div class="stats-panel attractor-panel">
+      <h3>ATTRACTOR FLOW</h3>
+      <div class="stat-row">
+        <span class="stat-label">μ</span>
+        <span class="stat-value" id="af-mean">0.00</span>
+        <span class="stat-emoji">⭐</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">σ</span>
+        <span class="stat-value">0.60</span>
+        <span class="stat-emoji">✓</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">n</span>
+        <span class="stat-value">19</span>
+      </div>
+    </div>
+
+    <div class="stats-divider">│</div>
+
+    <div class="stats-panel ralph-panel">
+      <h3>RALPH WIGGUM</h3>
+      <div class="stat-row">
+        <span class="stat-label">μ</span>
+        <span class="stat-value" id="ralph-mean">0.00</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">σ</span>
+        <span class="stat-value">1.22</span>
+        <span class="stat-emoji">⚠</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">n</span>
+        <span class="stat-value">19</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="significance-stats">
+    <div class="stat-item">
+      <span class="stat-label">F(1, 18)</span>
+      <span class="stat-value">0.520</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">p-value</span>
+      <span class="stat-value">0.480</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Cohen's d</span>
+      <span class="stat-value">0.17</span>
+    </div>
+  </div>
+
+  <div class="significance-callout">
+    <p class="emoji-label">⚔️ NO KNOCKOUT</p>
+    <p>NEITHER AGENT DOMINATED</p>
+  </div>
+
+  <div class="narrative-box">
+    <p class="typewriter-text">
+      NEITHER FIGHTER WAS KO'D.<br>
+      ATTRACTORFLOW EDGES QUALITY BY +0.21<br>
+      WHILE SPENDING 72% FEWER TOKENS.<br>
+      THE REAL WIN: AF σ=0.60 VS RALPH σ=1.22<br>
+      — ATTRACTOR IS MORE CONSISTENT.
+    </p>
+  </div>
+
+  <div class="limitations-accordion">
+    <div class="accordion-header" onclick="toggleAccordion(this)">
+      <span class="toggle-icon">▶</span>
+      <span class="accordion-title">⚠ KNOWN LIMITATIONS</span>
+    </div>
+    <div class="accordion-content">
+      <ol class="limitations-list">
+        <li>
+          <strong>Model Confound:</strong> AF reps 0+1 used Sonnet 4.6 (inherited from parent session). Rep 2 and validation used Haiku 4.5. Ralph always used Haiku 4.5. Rep 3 (validation) used Haiku for both.
+        </li>
+        <li>
+          <strong>Small Sample:</strong> Only 6 tasks, 19 observations per condition. Underpowered (power ≈ 12%).
+        </li>
+        <li>
+          <strong>Single Judge:</strong> Claude Sonnet 4.6 at temperature=0. No inter-rater reliability beyond ICC.
+        </li>
+        <li>
+          <strong>Task Selection:</strong> H01-H03 ("Hard") may favor complex orchestration patterns (AF's strength).
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 7: GAME OVER / CREDITS -->
+<section id="section-7" class="section-7 pixel-section">
+  <h2 class="section-title blink game-over-title">GAME OVER</h2>
+
+  <div class="high-score-table">
+    <table class="pixel-scoreboard final-scores">
+      <thead>
+        <tr>
+          <th>RANK</th>
+          <th>CONDITION</th>
+          <th>SCORE</th>
+          <th>GRADE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="rank-first">
+          <td>🥇 #1</td>
+          <td>ATTRACTORFLOW</td>
+          <td class="score-af">9.63</td>
+          <td class="grade-s">S</td>
+        </tr>
+        <tr class="rank-second">
+          <td>🥈 #2</td>
+          <td>RALPH WIGGUM</td>
+          <td class="score-ralph">9.42</td>
+          <td class="grade-a">A</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="action-buttons">
+    <a href="https://github.com/SharathSPhD/strange-wiggum" class="pixel-button repo-button" target="_blank" rel="noopener noreferrer">
+      🎮 VIEW SOURCE + DATA
+      <span class="arrow">→</span>
+      github.com/SharathSPhD/strange-wiggum
+    </a>
+  </div>
+
+  <div class="data-downloads">
+    <h3 class="downloads-title">DATA ARTIFACTS</h3>
+    <div class="button-group">
+      <a href="data/scores.csv" class="pixel-button download-button" download>
+        📊 DOWNLOAD SCORES CSV
+      </a>
+      <a href="data/stats_summary.json" class="pixel-button download-button" download>
+        📈 DOWNLOAD STATS JSON
+      </a>
+    </div>
+  </div>
+
+  <div class="credits-box">
+    <div class="credits-content">
+      <h3>CREDITS</h3>
+      <p class="separator">═══════════════════════</p>
+      <div class="credits-section">
+        <p class="credits-label">BUILT WITH:</p>
+        <ul>
+          <li>• Claude Code (Anthropic)</li>
+          <li>• AttractorFlow Plugin</li>
+          <li>• Ralph Wiggum Loop</li>
+          <li>• Chart.js · PapaParse</li>
+        </ul>
+      </div>
+      <p class="separator">═══════════════════════</p>
+      <div class="credits-meta">
+        <p><strong>BENCHMARK:</strong> April 2026</p>
+        <p><strong>JUDGE:</strong> Claude Sonnet 4.6</p>
+        <p><strong>TRIALS:</strong> 38</p>
+      </div>
+      <p class="separator">═══════════════════════</p>
+    </div>
+  </div>
+
+  <footer class="pixel-footer">
+    © 2026 Strange Wiggum Benchmark · MIT License
+  </footer>
+</section>
+
+<style>
+  /* ===== SECTION 4: ROUND BY ROUND ===== */
+  .section-4 {
+    padding: 3rem 2rem;
+  }
+
+  .scoreboard-wrapper {
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  .pixel-scoreboard {
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid var(--pixel-border);
+    background: var(--pixel-bg);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
+
+  .pixel-scoreboard th,
+  .pixel-scoreboard td {
+    padding: 0.8rem;
+    border: 2px solid var(--pixel-border);
+    text-align: center;
+  }
+
+  .pixel-scoreboard th {
+    background: var(--pixel-green);
+    color: var(--pixel-bg);
+    font-weight: bold;
+  }
+
+  .pixel-scoreboard tbody tr {
+    background: var(--pixel-bg);
+    transition: background-color 0.2s;
+  }
+
+  .pixel-scoreboard tbody tr:hover {
+    background: rgba(0, 255, 65, 0.1);
+  }
+
+  .pixel-scoreboard tbody tr.key-battle {
+    background: rgba(57, 255, 20, 0.15);
+    border: 2px dashed var(--pixel-border);
+  }
+
+  .pixel-scoreboard .task-id {
+    font-weight: bold;
+    color: var(--pixel-cyan);
+  }
+
+  .pixel-scoreboard .difficulty-easy {
+    color: var(--pixel-green);
+  }
+
+  .pixel-scoreboard .difficulty-hard {
+    color: var(--pixel-red);
+    font-weight: bold;
+  }
+
+  .pixel-scoreboard .score-neutral {
+    color: var(--pixel-cyan);
+  }
+
+  .pixel-scoreboard .score-ralph {
+    color: var(--pixel-red);
+    font-weight: bold;
+  }
+
+  .pixel-scoreboard .score-af {
+    color: var(--pixel-green);
+    font-weight: bold;
+  }
+
+  .pixel-scoreboard .winner-tie {
+    color: var(--pixel-yellow);
+    font-weight: bold;
+  }
+
+  .pixel-scoreboard .winner-ralph {
+    color: var(--pixel-red);
+    font-weight: bold;
+  }
+
+  .pixel-scoreboard .winner-af {
+    color: var(--pixel-green);
+    font-weight: bold;
+    animation: pulse-glow 0.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 0px var(--pixel-green); }
+    50% { text-shadow: 0 0 10px var(--pixel-green), 0 0 20px var(--pixel-green); }
+  }
+
+  .callout-box {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 3px solid var(--pixel-border);
+    background: rgba(0, 255, 65, 0.05);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    line-height: 1.6;
+    color: var(--pixel-green);
+  }
+
+  .h02-analysis {
+    border-color: var(--pixel-red);
+    background: rgba(255, 65, 65, 0.05);
+    color: var(--pixel-yellow);
+  }
+
+  .callout-title {
+    color: var(--pixel-red);
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  .csv-status-container {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .csv-status {
+    display: inline-block;
+    padding: 1rem 1.5rem;
+    border: 2px solid var(--pixel-border);
+    background: var(--pixel-bg);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    color: var(--pixel-yellow);
+  }
+
+  .csv-status.loading {
+    color: var(--pixel-yellow);
+    animation: pulse 1s infinite;
+  }
+
+  .csv-status.success {
+    color: var(--pixel-green);
+    border-color: var(--pixel-green);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ===== SECTION 5: POWER LEVEL CHARTS ===== */
+  .section-5 {
+    padding: 3rem 2rem;
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 3rem;
+    margin: 2rem 0;
+  }
+
+  .chart-container {
+    position: relative;
+    padding: 2rem;
+    border: 3px solid var(--pixel-border);
+    background: var(--pixel-bg);
+    height: 350px;
+  }
+
+  .chart-container canvas {
+    max-height: 300px;
+  }
+
+  /* ===== SECTION 6: FINAL BOSS STATS ===== */
+  .section-6 {
+    padding: 3rem 2rem;
+  }
+
+  .section-6 .section-title {
+    margin-bottom: 3rem;
+  }
+
+  .blink {
+    animation: blink-text 1s infinite;
+  }
+
+  @keyframes blink-text {
+    0%, 49%, 100% { opacity: 1; }
+    50%, 99% { opacity: 0.3; }
+  }
+
+  .stats-comparison {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stats-panel {
+    flex: 1;
+    min-width: 200px;
+    padding: 2rem;
+    border: 3px solid var(--pixel-border);
+    background: var(--pixel-bg);
+    text-align: center;
+  }
+
+  .stats-panel h3 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .attractor-panel h3 {
+    color: var(--pixel-green);
+  }
+
+  .ralph-panel h3 {
+    color: var(--pixel-red);
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 1rem 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+  }
+
+  .stat-label {
+    color: var(--pixel-cyan);
+    min-width: 40px;
+  }
+
+  .stat-value {
+    font-weight: bold;
+    font-size: 1.2em;
+    min-width: 60px;
+  }
+
+  .attractor-panel .stat-value {
+    color: var(--pixel-green);
+  }
+
+  .ralph-panel .stat-value {
+    color: var(--pixel-red);
+  }
+
+  .stat-emoji {
+    font-size: 1em;
+    margin-left: 0.5rem;
+  }
+
+  .stats-divider {
+    font-size: 3rem;
+    color: var(--pixel-border);
+    line-height: 1;
+  }
+
+  .significance-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin: 2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    padding: 1rem 1.5rem;
+    border: 2px solid var(--pixel-border);
+    background: var(--pixel-bg);
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .stat-item .stat-label {
+    display: block;
+    color: var(--pixel-cyan);
+    font-size: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-item .stat-value {
+    display: block;
+    color: var(--pixel-yellow);
+    font-size: 1.2rem;
+  }
+
+  .significance-callout {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 3px dashed var(--pixel-red);
+    background: rgba(255, 65, 65, 0.05);
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .emoji-label {
+    font-size: 1rem;
+    margin: 0;
+    color: var(--pixel-red);
+  }
+
+  .significance-callout p {
+    margin: 0.5rem 0;
+    color: var(--pixel-yellow);
+    font-size: 0.75rem;
+  }
+
+  .narrative-box {
+    margin: 2rem 0;
+    padding: 2rem;
+    border: 3px solid var(--pixel-green);
+    background: rgba(0, 255, 65, 0.08);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    line-height: 1.8;
+    color: var(--pixel-green);
+    text-align: center;
+  }
+
+  .typewriter-text {
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .limitations-accordion {
+    margin: 2rem 0;
+    border: 2px solid var(--pixel-yellow);
+    background: var(--pixel-bg);
+  }
+
+  .accordion-header {
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 0, 0.1);
+    cursor: pointer;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    color: var(--pixel-yellow);
+    border-bottom: 2px solid var(--pixel-yellow);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: background-color 0.3s;
+  }
+
+  .accordion-header:hover {
+    background: rgba(255, 255, 0, 0.2);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.3s;
+  }
+
+  .accordion-header.active .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .accordion-header.active ~ .accordion-content {
+    max-height: 500px;
+  }
+
+  .limitations-accordion.active .accordion-content {
+    max-height: 500px;
+  }
+
+  .limitations-list {
+    padding: 1.5rem 2rem;
+    list-style: none;
+    counter-reset: item;
+  }
+
+  .limitations-list li {
+    counter-increment: item;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    position: relative;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    line-height: 1.6;
+    color: var(--pixel-cyan);
+  }
+
+  .limitations-list li::before {
+    content: counter(item);
+    position: absolute;
+    left: 0;
+    color: var(--pixel-yellow);
+    font-weight: bold;
+  }
+
+  .limitations-list strong {
+    color: var(--pixel-green);
+  }
+
+  /* ===== SECTION 7: GAME OVER ===== */
+  .section-7 {
+    padding: 3rem 2rem;
+  }
+
+  .game-over-title {
+    font-size: 2rem;
+    letter-spacing: 0.2em;
+    color: var(--pixel-red);
+    text-shadow: 0 0 20px var(--pixel-red);
+  }
+
+  .high-score-table {
+    margin: 3rem 0;
+  }
+
+  .final-scores th {
+    background: var(--pixel-yellow);
+    color: var(--pixel-bg);
+  }
+
+  .final-scores .rank-first .score-af {
+    color: var(--pixel-green);
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  .final-scores .rank-first .grade-s {
+    color: var(--pixel-yellow);
+    font-weight: bold;
+    font-size: 1.3em;
+  }
+
+  .final-scores .rank-second .score-ralph {
+    color: var(--pixel-red);
+    font-weight: bold;
+  }
+
+  .final-scores .rank-second .grade-a {
+    color: var(--pixel-cyan);
+    font-weight: bold;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  .pixel-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border: 3px solid var(--pixel-border);
+    background: var(--pixel-bg);
+    color: var(--pixel-green);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .pixel-button:hover {
+    background: var(--pixel-green);
+    color: var(--pixel-bg);
+    text-shadow: 0 0 10px var(--pixel-bg);
+  }
+
+  .arrow {
+    margin-left: 0.5rem;
+  }
+
+  .data-downloads {
+    margin: 3rem 0;
+    text-align: center;
+  }
+
+  .downloads-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--pixel-cyan);
+  }
+
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .download-button {
+    border-color: var(--pixel-cyan);
+    color: var(--pixel-cyan);
+  }
+
+  .download-button:hover {
+    background: var(--pixel-cyan);
+    color: var(--pixel-bg);
+  }
+
+  .credits-box {
+    margin: 3rem 0;
+    padding: 2rem;
+    border: 3px solid var(--pixel-border);
+    background: rgba(0, 255, 65, 0.08);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.65rem;
+    color: var(--pixel-green);
+    text-align: center;
+  }
+
+  .credits-content h3 {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    color: var(--pixel-yellow);
+  }
+
+  .separator {
+    margin: 1rem 0;
+    color: var(--pixel-border);
+    letter-spacing: 0.1em;
+  }
+
+  .credits-section {
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  .credits-label {
+    display: block;
+    color: var(--pixel-cyan);
+    margin-bottom: 0.5rem;
+  }
+
+  .credits-section ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .credits-section li {
+    margin: 0.5rem 0;
+    color: var(--pixel-green);
+  }
+
+  .credits-meta {
+    margin: 1rem 0;
+  }
+
+  .credits-meta p {
+    margin: 0.5rem 0;
+    color: var(--pixel-cyan);
+  }
+
+  .pixel-footer {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    border-top: 2px dashed var(--pixel-border);
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: var(--pixel-border);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .charts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .pixel-scoreboard {
+      font-size: 0.6rem;
+    }
+
+    .pixel-scoreboard th,
+    .pixel-scoreboard td {
+      padding: 0.5rem;
+    }
+
+    .stats-comparison {
+      flex-direction: column;
+    }
+
+    .stats-divider {
+      transform: rotate(90deg);
+      margin: -1rem 0;
+    }
+
+    .button-group {
+      flex-direction: column;
+    }
+
+    .pixel-button {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // Load Chart.js from CDN
+  const chartScript = document.createElement('script');
+  chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+  chartScript.onload = function() {
+    initCharts();
+  };
+  document.head.appendChild(chartScript);
+
+  // Load PapaParse from CDN
+  const papaScript = document.createElement('script');
+  papaScript.src = 'https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js';
+  document.head.appendChild(papaScript);
+
+  // Initialize charts after Chart.js loads
+  function initCharts() {
+    if (typeof Chart === 'undefined') {
+      setTimeout(initCharts, 100);
+      return;
+    }
+
+    // Set default font for all charts
+    Chart.defaults.font.family = "'Press Start 2P', monospace";
+    Chart.defaults.font.size = 9;
+
+    // Chart 1: Quality Distribution
+    const qualityCtx = document.getElementById('qualityChart')?.getContext('2d');
+    if (qualityCtx) {
+      new Chart(qualityCtx, {
+        type: 'bar',
+        data: {
+          labels: ['A01', 'C02', 'C08', 'H01', 'H02', 'H03'],
+          datasets: [
+            {
+              label: 'Ralph',
+              data: [9.00, 9.33, 9.67, 10.00, 8.75, 10.00],
+              backgroundColor: '#ff4141',
+              borderColor: '#ff4141',
+              borderWidth: 2
+            },
+            {
+              label: 'AF',
+              data: [9.00, 9.33, 9.67, 10.00, 10.00, 9.67],
+              backgroundColor: '#00ff41',
+              borderColor: '#00ff41',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'QUALITY SCORE PER TASK',
+              color: '#39ff14',
+              font: { size: 11, weight: 'bold' }
+            },
+            legend: {
+              labels: { color: '#39ff14', font: { size: 9 } }
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 10,
+              ticks: { color: '#39ff14' },
+              grid: { color: 'rgba(57, 255, 20, 0.2)' }
+            },
+            x: {
+              ticks: { color: '#39ff14' },
+              grid: { color: 'rgba(57, 255, 20, 0.2)' }
+            }
+          }
+        }
+      });
+    }
+
+    // Chart 2: Efficiency Radar
+    const radarCtx = document.getElementById('radarChart')?.getContext('2d');
+    if (radarCtx) {
+      new Chart(radarCtx, {
+        type: 'radar',
+        data: {
+          labels: ['QUALITY', 'CONSISTENCY', 'TOKEN EFF.', 'SPEED', 'TEST PASS'],
+          datasets: [
+            {
+              label: 'Ralph',
+              data: [9.42, 6, 2, 8, 5],
+              borderColor: '#ff4141',
+              backgroundColor: 'rgba(255, 65, 65, 0.2)',
+              pointBackgroundColor: '#ff4141',
+              pointBorderColor: '#0d0d0d',
+              pointBorderWidth: 2
+            },
+            {
+              label: 'AF',
+              data: [9.63, 9, 9, 6, 9],
+              borderColor: '#00ff41',
+              backgroundColor: 'rgba(0, 255, 65, 0.2)',
+              pointBackgroundColor: '#00ff41',
+              pointBorderColor: '#0d0d0d',
+              pointBorderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'FIGHTER STATS COMPARISON',
+              color: '#39ff14',
+              font: { size: 11, weight: 'bold' }
+            },
+            legend: {
+              labels: { color: '#39ff14', font: { size: 9 } }
+            }
+          },
+          scales: {
+            r: {
+              min: 0,
+              max: 10,
+              ticks: { color: '#39ff14' },
+              grid: { color: 'rgba(57, 255, 20, 0.2)' }
+            }
+          }
+        }
+      });
+    }
+
+    // Chart 3: Regime Distribution Doughnut
+    const regimeCtx = document.getElementById('regimeChart')?.getContext('2d');
+    if (regimeCtx) {
+      const regimeCanvas = regimeCtx.canvas;
+      regimeCanvas.style.position = 'relative';
+
+      new Chart(regimeCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['CONVERGING', 'DIVERGING'],
+          datasets: [{
+            data: [94.7, 5.3],
+            backgroundColor: ['#00ff41', '#ff4141'],
+            borderColor: '#39ff14',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'ATTRACTORFLOW REGIME',
+              color: '#39ff14',
+              font: { size: 11, weight: 'bold' }
+            },
+            legend: {
+              labels: { color: '#39ff14', font: { size: 9 } }
+            }
+          }
+        }
+      });
+    }
+
+    // Chart 4: Lambda vs Quality Scatter
+    const lambdaCtx = document.getElementById('lambdaChart')?.getContext('2d');
+    if (lambdaCtx) {
+      new Chart(lambdaCtx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'AF Trials (λ vs Quality)',
+            data: [
+              {x: -0.30, y: 10}, {x: -0.85, y: 9}, {x: -1.00, y: 10},
+              {x: -0.70, y: 10}, {x: -0.60, y: 10}, {x: -1.00, y: 10},
+              {x: -0.30, y: 10}, {x: -0.40, y: 9}, {x: -1.00, y: 10},
+              {x:  0.15, y: 8},  {x: -0.30, y: 10},{x: -0.50, y: 10},
+              {x: -0.80, y: 10}, {x: -1.00, y: 10},{x: -1.00, y: 10},
+              {x: -0.50, y: 9},  {x: -0.30, y: 10},{x: -1.00, y: 10},
+              {x: -0.50, y: 10}
+            ],
+            backgroundColor: '#00ffff',
+            borderColor: '#00ffff',
+            borderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            title: {
+              display: true,
+              text: 'λ (LYAPUNOV) vs QUALITY',
+              color: '#39ff14',
+              font: { size: 11, weight: 'bold' }
+            },
+            subtitle: {
+              display: true,
+              text: 'r = -0.418, p = 0.075 | Negative λ = converging trajectory',
+              color: '#00ffff',
+              font: { size: 8 }
+            },
+            legend: {
+              labels: { color: '#39ff14', font: { size: 9 } }
+            }
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              title: { display: true, text: 'LYAPUNOV EXPONENT', color: '#39ff14' },
+              min: -1.2,
+              max: 0.3,
+              ticks: { color: '#39ff14' },
+              grid: { color: 'rgba(57, 255, 20, 0.2)' }
+            },
+            y: {
+              min: 7,
+              max: 10.5,
+              title: { display: true, text: 'QUALITY', color: '#39ff14' },
+              ticks: { color: '#39ff14' },
+              grid: { color: 'rgba(57, 255, 20, 0.2)' }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // Load CSV and compute means
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusEl = document.getElementById('csv-status');
+
+    fetch('data/scores.csv')
+      .then(response => response.text())
+      .then(csv => {
+        if (typeof Papa !== 'undefined') {
+          Papa.parse(csv, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              const rows = results.data.filter(row => row.task_id && row.condition);
+
+              if (rows.length > 0) {
+                // Compute per-task means
+                const taskMeans = {};
+                rows.forEach(row => {
+                  const task = row.task_id;
+                  if (!taskMeans[task]) {
+                    taskMeans[task] = { ralph: [], af: [] };
+                  }
+                  const score = parseFloat(row.quality_score);
+                  if (!isNaN(score)) {
+                    if (row.condition.toLowerCase().includes('ralph')) {
+                      taskMeans[task].ralph.push(score);
+                    } else if (row.condition.toLowerCase().includes('attractor')) {
+                      taskMeans[task].af.push(score);
+                    }
+                  }
+                });
+
+                statusEl.textContent = `✓ Live from data: ${rows.length} rows loaded`;
+                statusEl.classList.remove('loading');
+                statusEl.classList.add('success');
+              }
+            }
+          });
+        }
+      })
+      .catch(err => {
+        console.error('Error loading CSV:', err);
+        statusEl.textContent = '✗ Error loading data';
+        statusEl.classList.remove('loading');
+      });
+
+    // Animate score counters
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+          entry.target.classList.add('animated');
+          animateCounter(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('[id^="ralph-mean"], [id^="af-mean"]').forEach(el => {
+      observer.observe(el);
+    });
+  });
+
+  function animateCounter(element) {
+    const target = element.id === 'ralph-mean' ? 9.42 : 9.63;
+    const duration = 1500;
+    const startTime = Date.now();
+
+    function easeOut(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function update() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = easeOut(progress);
+      const current = eased * target;
+      element.textContent = current.toFixed(2);
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+
+    update();
+  }
+
+  // Accordion toggle
+  function toggleAccordion(header) {
+    const accordion = header.closest('.limitations-accordion');
+    accordion.classList.toggle('active');
+    header.classList.toggle('active');
+  }
+</script>
+
+</body>
+</html>

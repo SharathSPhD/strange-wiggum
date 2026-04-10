@@ -1,0 +1,115 @@
+{
+  "descriptives": [
+    {
+      "condition": "attractor",
+      "label": "AttractorFlow",
+      "n": 19,
+      "mean": 9.631578947368421,
+      "sd": 0.5972647203701474,
+      "median": 10.0,
+      "min": 8.0,
+      "max": 10.0,
+      "ci_95_lo": 9.368421052631579,
+      "ci_95_hi": 9.894736842105264
+    },
+    {
+      "condition": "ralph",
+      "label": "Ralph",
+      "n": 19,
+      "mean": 9.421052631578947,
+      "sd": 1.2163602113447685,
+      "median": 10.0,
+      "min": 5.0,
+      "max": 10.0,
+      "ci_95_lo": 8.789473684210526,
+      "ci_95_hi": 9.842105263157896
+    }
+  ],
+  "normality": {
+    "attractor": {
+      "W": 0.6466797552732673,
+      "p_value": 1.374043344673353e-05,
+      "n": 19,
+      "normal": false
+    },
+    "ralph": {
+      "W": 0.5432887991576592,
+      "p_value": 1.244860424397003e-06,
+      "n": 19,
+      "normal": false
+    }
+  },
+  "rm_anova": {
+    "F": 0.5198555956678729,
+    "df1": 1.0,
+    "df2": 18.0,
+    "p_value": 0.4801639064032224,
+    "p_GG_corrected": NaN,
+    "GG_epsilon": 1.0,
+    "partial_eta_sq": 0.012578616352201331,
+    "sphericity_violated": false
+  },
+  "pairwise": [
+    {
+      "condition_a": "ralph",
+      "condition_b": "attractor",
+      "mean_a": 9.421052631578947,
+      "mean_b": 9.631578947368421,
+      "mean_diff": -0.21052631578947367,
+      "ci_95_lo": -0.8421052631578947,
+      "ci_95_hi": 0.2631578947368421,
+      "t_stat": -0.7210101217513316,
+      "p_value": 0.4801639064032234,
+      "p_bonferroni": 0.4801639064032234,
+      "significant": false,
+      "cohen_d": -0.16541106620955484,
+      "alpha_bonferroni": 0.05
+    }
+  ],
+  "kruskal_iterations": {
+    "H_stat": 22.291033015260833,
+    "p_value": 2.3429814440162244e-06,
+    "variable": "iterations"
+  },
+  "lambda_quality_correlation": {
+    "pearson_r": -0.41825396913981544,
+    "p_value": 0.07473411184929943,
+    "n": 19
+  },
+  "icc": {
+    "ICC_type": "ICC(A,1)",
+    "icc": 0.0,
+    "ci_95_lo": -0.31,
+    "ci_95_hi": 1.0,
+    "F": 1.0,
+    "p_value": 0.3910022189557705
+  },
+  "subgroup_anova": {
+    "analysis": {
+      "F": 0.0,
+      "p_value": 1.0,
+      "partial_eta_sq": 0.0,
+      "n_tasks": 1,
+      "n_obs": 6
+    },
+    "coding": {
+      "F": 0.5555555555555556,
+      "p_value": 0.4675760636475933,
+      "partial_eta_sq": 0.01694915254237288,
+      "n_tasks": 5,
+      "n_obs": 32
+    }
+  },
+  "power": {
+    "n_per_condition": "19",
+    "observed_F": 0.5198555956678729,
+    "df1": 2,
+    "df2": "36",
+    "power_approx": 0.12329537272003499,
+    "alpha": 0.05
+  },
+  "n_trials": 38,
+  "n_tasks": 6,
+  "n_conditions": 2,
+  "n_reps": 4
+}
