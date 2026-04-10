@@ -149,13 +149,14 @@
       color: var(--pixel-green);
       border: 3px solid var(--pixel-border);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: filter 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
       box-shadow: 0 0 10px var(--pixel-border);
       animation: blink 1s infinite;
+      opacity: 1 !important;
     }
 
     .press-start-btn:hover {
-      animation: glow 0.5s ease-in-out infinite;
+      filter: brightness(1.3) drop-shadow(0 0 12px var(--pixel-green));
       transform: scale(1.05);
     }
 
@@ -163,10 +164,45 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      color: rgba(57, 255, 20, 0.4);
-      font-size: clamp(10px, 1.5vw, 14px);
+      color: rgba(57, 255, 20, 0.75);
+      font-size: clamp(9px, 1.2vw, 12px);
+      font-family: 'Press Start 2P', monospace;
       animation: blink 2s infinite;
-      z-index: 10;
+      z-index: 100;
+      background: none;
+      border: 2px solid rgba(57,255,20,0.5);
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .insert-coin:hover {
+      color: rgba(57,255,20,1);
+      border-color: rgba(57,255,20,1);
+      box-shadow: 0 0 12px rgba(57,255,20,0.6);
+      animation: none;
+    }
+    #credits-display {
+      position: fixed;
+      bottom: 6rem;
+      right: 2rem;
+      color: var(--pixel-yellow);
+      font-size: 10px;
+      font-family: 'Press Start 2P', monospace;
+      z-index: 100;
+      display: none;
+    }
+    .credit-float {
+      position: fixed;
+      color: var(--pixel-yellow);
+      font-size: 11px;
+      font-family: 'Press Start 2P', monospace;
+      pointer-events: none;
+      z-index: 200;
+      animation: floatUp 1.2s ease-out forwards;
+    }
+    @keyframes floatUp {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-60px); }
     }
 
     /* ============================================
@@ -228,12 +264,13 @@
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      transition: all 0.3s ease;
+      transition: filter 0.2s, transform 0.2s;
+      opacity: 1 !important;
     }
 
     .fighter-card:hover {
-      animation: glow 1s ease-in-out infinite;
-      transform: translateY(-5px);
+      filter: brightness(1.2) drop-shadow(0 0 15px currentColor);
+      transform: scale(1.02) translateY(-4px);
     }
 
     .fighter-card.ralph-card {
@@ -534,30 +571,162 @@
       border: 3px solid var(--pixel-border);
       text-decoration: none;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: filter 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
       box-shadow: 0 0 10px var(--pixel-border);
       text-align: center;
+      opacity: 1 !important;
     }
 
     .data-link-btn:hover {
-      animation: glow 0.5s ease-in-out infinite;
+      filter: brightness(1.4) drop-shadow(0 0 8px var(--pixel-border));
       transform: scale(1.05);
     }
 
     .reveal {
       opacity: 0;
-      animation: fadeInUp 0.8s ease-out forwards;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* ============================================
+       STICKY NAV BAR
+       ============================================ */
+    .pixel-nav {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      background: rgba(13,13,13,0.97);
+      border-bottom: 2px solid var(--pixel-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 20px;
+      font-family: 'Press Start 2P', monospace;
+      backdrop-filter: blur(4px);
+    }
+    .nav-title {
+      color: var(--pixel-green);
+      font-size: clamp(7px, 1.2vw, 10px);
+      white-space: nowrap;
+    }
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .nav-link, .nav-github {
+      color: rgba(57,255,20,0.6);
+      text-decoration: none;
+      font-size: clamp(6px, 0.9vw, 9px);
+      transition: color 0.15s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--pixel-green); }
+    .nav-github { color: var(--pixel-yellow); }
+    .nav-github:hover { color: #fff; text-shadow: 0 0 8px var(--pixel-yellow); }
+
+    /* ============================================
+       QUICK START SECTION
+       ============================================ */
+    .qs-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center; }
+    .qs-tab {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      background: transparent;
+      border: 2px solid rgba(57,255,20,0.4);
+      color: rgba(57,255,20,0.6);
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .qs-tab:hover, .qs-tab.active {
+      border-color: var(--pixel-green);
+      color: var(--pixel-green);
+      box-shadow: 0 0 8px rgba(57,255,20,0.4);
+      background: rgba(57,255,20,0.05);
+    }
+    .qs-card {
+      border: 2px solid rgba(57,255,20,0.3);
+      padding: 20px;
+      background: rgba(0,20,0,0.5);
+    }
+    .qs-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .qs-num {
+      color: var(--pixel-green);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 18px;
+      min-width: 32px;
+      line-height: 1;
+    }
+    .qs-title {
+      color: var(--pixel-yellow);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 9px;
+      margin-bottom: 6px;
+    }
+    .qs-code {
+      display: block;
+      background: #001100;
+      border: 1px solid rgba(57,255,20,0.2);
+      color: #00ff41;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      padding: 10px;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+    .qs-note {
+      margin-top: 16px;
+      padding: 12px;
+      border: 1px solid var(--pixel-yellow);
+      color: var(--pixel-yellow);
+      font-size: 8px;
+    }
+
+    /* ============================================
+       GAMEPLAY & SCROLL PROGRESS
+       ============================================ */
+    #hero { cursor: crosshair; }
+    .fighter-card { cursor: grab; }
+    .fighter-card:active { cursor: grabbing; }
+
+    #scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: var(--pixel-green);
+      z-index: 10000;
+      transition: width 0.08s linear;
+      box-shadow: 0 0 6px var(--pixel-green);
+    }
+
+    .selected-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(57,255,20,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+      pointer-events: none;
+      border: 2px solid #39ff14;
     }
 
     /* Mobile responsiveness */
@@ -591,13 +760,28 @@
   <!-- CRT Scanline Overlay -->
   <div class="scanline-overlay"></div>
 
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress"></div>
+
+  <!-- Sticky Nav Bar -->
+  <nav class="pixel-nav" id="pixel-nav">
+    <span class="nav-title">⚔ AGENT WARS</span>
+    <div class="nav-links">
+      <a href="#hero" class="nav-link">[ HOME ]</a>
+      <a href="#fighter-select" class="nav-link">[ FIGHTERS ]</a>
+      <a href="#quickstart" class="nav-link">[ QUICK START ]</a>
+      <a href="#results" class="nav-link" id="results-nav">[ RESULTS ]</a>
+      <a href="https://github.com/SharathSPhD/strange-wiggum" target="_blank" class="nav-github">[ ⭐ GITHUB ]</a>
+    </div>
+  </nav>
+
   <!-- ============================================
        SECTION 1: HERO
        ============================================ -->
   <section id="hero">
-    <img src="https://media.giphy.com/media/xTiTnlfW3b5pmlYzBe/giphy.gif"
-         alt="Ralph Wiggum fighting"
-         class="hero-gif">
+    <canvas id="battle-canvas" width="800" height="280" style="width:min(800px,90vw);height:auto;border:3px solid var(--pixel-border);box-shadow:0 0 20px var(--pixel-border);image-rendering:pixelated;display:block;margin:0 auto"></canvas>
+    <button id="download-gif-btn" class="pixel-button" style="margin-top:12px;font-size:9px">⬇ DOWNLOAD BATTLE GIF</button>
+    <div id="gif-progress" style="display:none;color:var(--pixel-green);font-size:8px;margin-top:6px;font-family:'Press Start 2P',monospace">RENDERING GIF... 0%</div>
     <h1 class="hero-title" id="typewriter-title"></h1>
     <h2 class="hero-subtitle">RALPH WIGGUM  VS  ATTRACTORFLOW</h2>
     <p class="hero-meta">38 TRIALS · 6 TASKS · BLINDED JUDGE</p>
@@ -606,7 +790,8 @@
     </button>
   </section>
 
-  <div class="insert-coin">INSERT COIN</div>
+  <button class="insert-coin" id="insert-coin-btn" onclick="insertCoin(event)" title="Click to insert coin!">🪙 INSERT COIN</button>
+  <div id="credits-display">CREDITS: <span id="credits-count">0</span></div>
 
   <!-- ============================================
        SECTION 2: FIGHTER SELECT
@@ -906,8 +1091,120 @@
     document.addEventListener('click', playBloop, { once: true });
   })();
 </script>
+
+<!-- SECTION: QUICK START -->
+<section id="quickstart" style="padding:40px 20px;max-width:900px;margin:0 auto">
+  <h2 class="section-title reveal">── QUICK START ──</h2>
+  <p style="color:var(--pixel-cyan);font-size:9px;text-align:center;margin-bottom:24px;font-family:'Press Start 2P',monospace">HOW TO USE THIS IN YOUR OWN BATTLES</p>
+
+  <!-- Tab buttons -->
+  <div class="qs-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;justify-content:center">
+    <button class="qs-tab active" onclick="showTab('tab-run')" data-tab="tab-run">▶ RUN THIS</button>
+    <button class="qs-tab" onclick="showTab('tab-build')" data-tab="tab-build">🔧 BUILD YOURS</button>
+    <button class="qs-tab" onclick="showTab('tab-af')" data-tab="tab-af">🌀 ATTRACTORFLOW</button>
+    <button class="qs-tab" onclick="showTab('tab-ralph')" data-tab="tab-ralph">🧒 RALPH LOOP</button>
+  </div>
+
+  <!-- Tab: Run This Benchmark -->
+  <div id="tab-run" class="qs-content" style="display:block">
+    <div class="qs-card">
+      <div class="qs-step"><span class="qs-num">01</span><div>
+        <div class="qs-title">CLONE THE REPO</div>
+        <code class="qs-code">git clone https://github.com/SharathSPhD/strange-wiggum<br>cd strange-wiggum</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">02</span><div>
+        <div class="qs-title">SET UP PYTHON ENV</div>
+        <code class="qs-code">uv venv .venv --python 3.13<br>source .venv/bin/activate  # or .venv\Scripts\activate on Windows<br>uv pip install pingouin scipy pandas numpy</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">03</span><div>
+        <div class="qs-title">INSTALL CLAUDE CODE CLI</div>
+        <code class="qs-code">npm install -g @anthropic-ai/claude-code<br>claude login  # authenticate with Anthropic</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">04</span><div>
+        <div class="qs-title">INSTALL ATTRACTORFLOW PLUGIN</div>
+        <code class="qs-code">claude plugin install attractor-flow<br># Verify: claude plugin list</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">05</span><div>
+        <div class="qs-title">RUN A SINGLE TRIAL</div>
+        <code class="qs-code">python -m benchmark.harness --tasks H02 --conditions ralph --reps 1<br># Results appear in benchmark/results/scores.csv</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">06</span><div>
+        <div class="qs-title">GENERATE REPORT</div>
+        <code class="qs-code">python -m benchmark.stats<br>python -m benchmark.report<br># Open benchmark/results/leaderboard.md</code>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- Tab: Build Your Own -->
+  <div id="tab-build" class="qs-content" style="display:none">
+    <div class="qs-card">
+      <div class="qs-step"><span class="qs-num">01</span><div>
+        <div class="qs-title">ADD YOUR TASKS</div>
+        <code class="qs-code"># benchmark/tasks/coding/MYNAME.md<br># Required: task spec + ```python test suite``` block<br># See H02_pratt_parser.md as a template</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">02</span><div>
+        <div class="qs-title">DEFINE YOUR CONDITIONS</div>
+        <code class="qs-code"># benchmark/conditions/my_agent.py<br># Implement: run(task_spec: str) -> Result<br># Result needs: output, iterations, tokens_used, elapsed_seconds</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">03</span><div>
+        <div class="qs-title">CUSTOMIZE THE JUDGE</div>
+        <code class="qs-code"># benchmark/judge/rubric.md — edit scoring criteria<br># benchmark/config.py — change MODEL, MAX_SCORE, TEST_PASS_BONUS<br># Judge always uses Claude Sonnet 4.6 at temperature=0</code>
+      </div></div>
+      <div class="qs-step"><span class="qs-num">04</span><div>
+        <div class="qs-title">RUN YOUR DUEL</div>
+        <code class="qs-code">python -m benchmark.harness --tasks MYNAME --conditions ralph,my_agent --reps 3<br>python -m benchmark.stats && python -m benchmark.report</code>
+      </div></div>
+      <div class="qs-note" style="margin-top:16px;padding:12px;border:1px solid var(--pixel-yellow);color:var(--pixel-yellow);font-size:8px">
+        💡 TIP: Analysis tasks (no test suite) use rubric score only (0-10).<br>Coding tasks get +2 bonus for passing pytest (cap 10).<br>Latin-square ordering eliminates condition carry-over effects.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: AttractorFlow -->
+  <div id="tab-af" class="qs-content" style="display:none">
+    <div class="qs-card">
+      <p style="color:var(--pixel-cyan);font-size:9px;margin-bottom:16px">AttractorFlow instruments your Claude Code agent using Finite-Time Lyapunov Exponents (FTLE) — a measure from dynamical systems theory:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="padding:10px;border:1px solid var(--pixel-green);font-size:8px;color:var(--pixel-green)">
+          <div style="margin-bottom:6px">λ &lt; -0.05</div>
+          <div style="color:#fff">CONVERGING</div>
+          <div style="color:#aaa;font-size:7px;margin-top:4px">On track. Agent moving toward solution attractor.</div>
+        </div>
+        <div style="padding:10px;border:1px solid var(--pixel-red);font-size:8px;color:var(--pixel-red)">
+          <div style="margin-bottom:6px">λ &gt; 0.25</div>
+          <div style="color:#fff">DIVERGING</div>
+          <div style="color:#aaa;font-size:7px;margin-top:4px">Off track. Trajectory unstable. Spawn explorer-agent.</div>
+        </div>
+      </div>
+      <div class="qs-title">MCP TOOLS AVAILABLE</div>
+      <code class="qs-code">attractorflow_record_state(text)   # embed + record state<br>attractorflow_get_regime()         # CONVERGING/STUCK/DIVERGING<br>attractorflow_get_lyapunov()       # current λ value<br>attractorflow_checkpoint()         # save good state<br>attractorflow_detect_bifurcation() # phase transition?</code>
+      <div class="qs-title" style="margin-top:12px">INSTALL</div>
+      <code class="qs-code">claude plugin install attractor-flow</code>
+      <div class="qs-title" style="margin-top:12px">USE IN YOUR AGENT PROMPT</div>
+      <code class="qs-code">"Call attractorflow_record_state() after every step.<br> Check get_regime() every 2-3 steps.<br> If DIVERGING → spawn explorer-agent to find new approach.<br> If CONVERGING → spawn convergence-agent to finish."</code>
+    </div>
+  </div>
+
+  <!-- Tab: Ralph Loop -->
+  <div id="tab-ralph" class="qs-content" style="display:none">
+    <div class="qs-card">
+      <p style="color:var(--pixel-red);font-size:9px;margin-bottom:12px">"I'm Ralph Wiggum and I tried my best!"</p>
+      <p style="color:#aaa;font-size:8px;margin-bottom:16px">Ralph is a dead-simple iterative baseline. No orchestration. No monitoring. Just calling claude -p in a loop until it gives up or succeeds.</p>
+      <div class="qs-title">HOW IT WORKS</div>
+      <code class="qs-code">for iteration in range(MAX_ITERATIONS):   # default: 10<br>    response = claude_cli(prompt + history)<br>    history += response<br>    if "TASK COMPLETE" in response: break<br>    prompt = build_next_prompt(response)</code>
+      <div class="qs-title" style="margin-top:12px">ADAPT FOR YOUR OWN BASELINE</div>
+      <code class="qs-code"># benchmark/conditions/ralph.py<br># Change: MAX_ITERATIONS_RALPH in config.py<br># Change: COMPLETION_PROMISE = "TASK COMPLETE"<br># Change: CLI_MODEL = "claude-haiku-4-5-20251001"<br>#         (use claude-sonnet-4-6 for higher quality)</code>
+      <div class="qs-note" style="margin-top:16px;padding:12px;border:1px solid var(--pixel-red);color:#aaa;font-size:8px">
+        📊 RESULT: Ralph finished in 1.2 avg iterations (mostly 1 shot).<br>
+        Used 2,146 avg tokens per trial. σ=1.22 (inconsistent).<br>
+        Haiku 4.5 struggled with tricky precedence/edge cases.
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SECTION 4: ROUND-BY-ROUND RESULTS -->
-<section id="section-4" class="section-4 pixel-section">
+<section id="results" class="section-4 pixel-section">
   <h2 class="section-title">── ROUND BY ROUND ──</h2>
 
   <div class="scoreboard-wrapper">
@@ -1006,7 +1303,7 @@
 </section>
 
 <!-- SECTION 6: FINAL BOSS STATS -->
-<section id="section-6" class="section-6 pixel-section">
+<section id="verdict" class="section-6 pixel-section">
   <h2 class="section-title blink">── THE VERDICT ──</h2>
 
   <div class="stats-comparison">
@@ -1103,7 +1400,7 @@
 </section>
 
 <!-- SECTION 7: GAME OVER / CREDITS -->
-<section id="section-7" class="section-7 pixel-section">
+<section id="gameover" class="section-7 pixel-section">
   <h2 class="section-title blink game-over-title">GAME OVER</h2>
 
   <div class="high-score-table">
@@ -1647,15 +1944,15 @@
     font-size: 0.7rem;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: filter 0.15s, transform 0.15s, background 0.15s, color 0.15s;
     white-space: nowrap;
     text-align: center;
+    opacity: 1 !important;
   }
 
   .pixel-button:hover {
-    background: var(--pixel-green);
-    color: var(--pixel-bg);
-    text-shadow: 0 0 10px var(--pixel-bg);
+    filter: brightness(1.3) drop-shadow(0 0 8px var(--pixel-green));
+    transform: scale(1.05);
   }
 
   .arrow {
@@ -2114,6 +2411,448 @@
     accordion.classList.toggle('active');
     header.classList.toggle('active');
   }
+
+  // ============================================
+  // CANVAS BATTLE ANIMATION
+  // ============================================
+  function drawRalph(ctx, cx, cy, scale, frame) {
+    const p = scale;
+    const t = Math.sin(frame * 0.05) * p;
+
+    // HAIR (brown spikes)
+    ctx.fillStyle = '#4a2800';
+    [[-2,0],[0,-1],[2,0]].forEach(([dx,dy]) => ctx.fillRect(cx+(dx-1)*p, cy+dy*p+t, p, p*2));
+
+    // HEAD (yellow oval)
+    ctx.fillStyle = '#fbd800';
+    ctx.fillRect(cx-4*p, cy+0*p+t, 8*p, p);
+    for(let r=1; r<=5; r++) ctx.fillRect(cx-5*p, cy+r*p+t, 10*p, p);
+    for(let r=6; r<=7; r++) ctx.fillRect(cx-4*p, cy+r*p+t, 8*p, p);
+
+    // EYES
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(cx-3*p, cy+2*p+t, 2*p, 2*p);
+    ctx.fillRect(cx+1*p, cy+2*p+t, 2*p, 2*p);
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(cx-2*p, cy+3*p+t, p, p);
+    ctx.fillRect(cx+2*p, cy+3*p+t, p, p);
+
+    // CONFUSED EXPRESSION
+    if (frame % 120 < 40) {
+      ctx.fillStyle = '#ffff00';
+      ctx.font = `${p*3}px monospace`;
+      ctx.fillText('?', cx+4*p, cy-p+t);
+    }
+
+    // MOUTH
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(cx-2*p, cy+6*p+t, 4*p, p);
+    ctx.fillStyle = '#cc0000';
+    ctx.fillRect(cx-3*p, cy+6*p+t, p, p);
+    ctx.fillRect(cx+2*p, cy+6*p+t, p, p);
+
+    // BODY - SHIRT
+    ctx.fillStyle = '#e63946';
+    ctx.fillRect(cx-4*p, cy+8*p+t, 8*p, 4*p);
+    ctx.fillRect(cx-6*p, cy+9*p+t, 2*p, 3*p);
+    ctx.fillRect(cx+4*p, cy+9*p+t, 2*p, 3*p);
+
+    // SHORTS
+    ctx.fillStyle = '#3a86ff';
+    ctx.fillRect(cx-4*p, cy+12*p+t, 8*p, 4*p);
+
+    // LEGS
+    ctx.fillStyle = '#fbd800';
+    ctx.fillRect(cx-3*p, cy+16*p+t, 2*p, 4*p);
+    ctx.fillRect(cx+1*p, cy+16*p+t, 2*p, 4*p);
+
+    // SHOES
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(cx-4*p, cy+20*p+t, 3*p, p);
+    ctx.fillRect(cx+1*p, cy+20*p+t, 3*p, p);
+  }
+
+  function drawAttractorFlow(ctx, cx, cy, scale, frame) {
+    const p = scale;
+    const t = frame * 0.03;
+
+    // HEXAGONAL BODY
+    ctx.fillStyle = 'rgba(0, 20, 30, 0.9)';
+    ctx.beginPath();
+    for(let i=0; i<6; i++) {
+      const angle = (i * Math.PI/3) - Math.PI/2;
+      const r = 8*p;
+      if(i===0) ctx.moveTo(cx + r*Math.cos(angle), cy + r*Math.sin(angle)+p*2);
+      else ctx.lineTo(cx + r*Math.cos(angle), cy + r*Math.sin(angle)+p*2);
+    }
+    ctx.closePath();
+    ctx.fill();
+
+    // CIRCUIT LINES
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    [[cx-4*p, cy], [cx+4*p, cy], [cx, cy-4*p], [cx, cy+4*p]].forEach(([x,y]) => {
+      ctx.beginPath(); ctx.moveTo(cx, cy+p*2); ctx.lineTo(x, y+p*2); ctx.stroke();
+    });
+
+    // SPIRAL EYE
+    const eyeGrad = ctx.createRadialGradient(cx, cy+p*2, 0, cx, cy+p*2, 5*p);
+    eyeGrad.addColorStop(0, '#ffffff');
+    eyeGrad.addColorStop(0.3, '#00ffff');
+    eyeGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = eyeGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy+p*2, 5*p, 0, Math.PI*2);
+    ctx.fill();
+
+    // SPIRAL LINES
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for(let i=0; i<3; i++) {
+      const startAngle = t + (i * Math.PI * 2/3);
+      ctx.moveTo(cx, cy+p*2);
+      ctx.arc(cx, cy+p*2, (3+i)*p*0.7, startAngle, startAngle + Math.PI*1.2);
+    }
+    ctx.stroke();
+
+    // ORBITING PARTICLES
+    const particles = [
+      { r: 10*p, speed: 1.2, color: '#00ffff', size: 1.5*p },
+      { r: 13*p, speed: -0.8, color: '#39ff14', size: p },
+      { r: 8*p, speed: 2.0, color: '#ff6b35', size: p },
+    ];
+    particles.forEach(({r, speed, color, size}) => {
+      const angle = t * speed;
+      const px = cx + r * Math.cos(angle);
+      const py = cy + p*2 + r * Math.sin(angle) * 0.5;
+      const grad = ctx.createRadialGradient(px, py, 0, px, py, size*2);
+      grad.addColorStop(0, color);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(px, py, size*2, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(px, py, size, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    // λ READOUT
+    if (Math.floor(frame/30) % 2 === 0) {
+      ctx.fillStyle = '#39ff14';
+      ctx.font = `${p*2}px 'Press Start 2P', monospace`;
+      ctx.fillText('λ=-0.85', cx-4*p, cy+13*p);
+    }
+  }
+
+  function drawHPBar(ctx, x, y, w, label, score, maxScore, color, frame) {
+    const pct = score / maxScore;
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.fillRect(x, y+16, w, 10);
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y+16, w * pct, 10);
+    ctx.fillStyle = color;
+    ctx.font = `8px 'Press Start 2P', monospace`;
+    ctx.fillText(`${label} ${score.toFixed(2)}`, x, y+12);
+  }
+
+  function drawBattleFrame(frame) {
+    const battleCanvas = document.getElementById('battle-canvas');
+    if(!battleCanvas) return;
+    const bctx = battleCanvas.getContext('2d');
+    const W = battleCanvas.width, H = battleCanvas.height;
+    const scale = 4;
+
+    // Background
+    bctx.fillStyle = '#0d0d0d';
+    bctx.fillRect(0, 0, W, H);
+
+    // Grid overlay
+    bctx.strokeStyle = 'rgba(57,255,20,0.05)';
+    bctx.lineWidth = 1;
+    for(let x=0; x<W; x+=8) { bctx.beginPath(); bctx.moveTo(x,0); bctx.lineTo(x,H); bctx.stroke(); }
+    for(let y=0; y<H; y+=8) { bctx.beginPath(); bctx.moveTo(0,y); bctx.lineTo(W,y); bctx.stroke(); }
+
+    // Ground line
+    bctx.fillStyle = 'rgba(57,255,20,0.3)';
+    bctx.fillRect(0, H-20, W, 2);
+
+    const phase = Math.floor(frame / 60);
+    const phaseT = (frame % 60) / 60;
+    let ralphX, afX;
+
+    if (phase === 0) {
+      ralphX = W * 0.2;
+      afX = W * 0.8;
+      drawRalph(bctx, ralphX, H*0.55, scale, frame);
+      drawAttractorFlow(bctx, afX, H*0.5, scale, frame);
+      drawHPBar(bctx, 30, 20, 160, 'RALPH', 9.42, 10, '#ff4141', frame);
+      drawHPBar(bctx, W-190, 20, 160, 'AF', 9.63, 10, '#00ff41', frame);
+      bctx.fillStyle = '#ffff00';
+      bctx.font = `bold ${scale*4}px 'Press Start 2P', monospace`;
+      bctx.textAlign = 'center';
+      bctx.fillText('VS', W/2, H/2+scale*2);
+      bctx.textAlign = 'left';
+    } else if (phase === 1) {
+      ralphX = W * 0.2 + (W * 0.3) * phaseT;
+      afX = W * 0.8 - (W * 0.3) * phaseT;
+      if (phaseT > 0.7) {
+        bctx.save();
+        bctx.translate(ralphX, H*0.6);
+        bctx.rotate(0.4 * ((phaseT - 0.7) / 0.3));
+        drawRalph(bctx, 0, 0, scale, frame);
+        bctx.restore();
+      } else {
+        drawRalph(bctx, ralphX, H*0.55, scale, frame);
+      }
+      drawAttractorFlow(bctx, afX, H*0.5, scale, frame);
+      if (phaseT > 0.8) {
+        const clashAlpha = 1 - ((phaseT - 0.8) / 0.2);
+        bctx.fillStyle = `rgba(255,255,0,${clashAlpha})`;
+        bctx.font = `bold ${scale*6}px 'Press Start 2P', monospace`;
+        bctx.textAlign = 'center';
+        bctx.fillText('CLASH!', W/2, H*0.4);
+        bctx.textAlign = 'left';
+        for(let i=0; i<8; i++) {
+          const angle = (i/8) * Math.PI * 2;
+          const r = 30 * (phaseT - 0.8) / 0.2;
+          bctx.fillStyle = ['#ff4141','#ffff00','#00ffff','#ff6b35'][i%4];
+          bctx.beginPath();
+          bctx.arc(W/2 + r*Math.cos(angle), H*0.5 + r*Math.sin(angle), 4, 0, Math.PI*2);
+          bctx.fill();
+        }
+      }
+    } else if (phase >= 2) {
+      ralphX = W * 0.22;
+      afX = W * 0.78;
+      drawRalph(bctx, ralphX, H*0.55, scale, frame);
+      drawAttractorFlow(bctx, afX, H*0.5, scale, frame);
+      const scoreProgress = Math.min(1, phaseT * 3);
+      drawHPBar(bctx, 30, 20, 160, 'RALPH', 9.42 * scoreProgress, 10, '#ff4141', frame);
+      drawHPBar(bctx, W-190, 20, 160, 'AF', 9.63 * scoreProgress, 10, '#00ff41', frame);
+      bctx.fillStyle = 'rgba(0,255,65,0.9)';
+      bctx.font = `${scale*3}px 'Press Start 2P', monospace`;
+      bctx.textAlign = 'center';
+      bctx.fillText('ATTRACTOR EDGES IT!', W/2, H*0.15);
+      bctx.fillStyle = '#ffff00';
+      bctx.font = `${scale*2}px 'Press Start 2P', monospace`;
+      bctx.fillText('p=0.480 ns · d=0.17', W/2, H*0.25);
+      bctx.textAlign = 'left';
+    }
+
+    // Scanlines
+    for(let y=0; y<H; y+=2) {
+      bctx.fillStyle = 'rgba(0,0,0,0.1)';
+      bctx.fillRect(0, y, W, 1);
+    }
+  }
+
+  let battleFrame = 0;
+  let battleAnimId = null;
+  const TOTAL_FRAMES = 300;
+
+  function battleLoop() {
+    drawBattleFrame(battleFrame);
+    battleFrame = (battleFrame + 1) % TOTAL_FRAMES;
+    battleAnimId = requestAnimationFrame(battleLoop);
+  }
+
+  window.addEventListener('load', () => {
+    battleLoop();
+  });
+
+  // GIF Download
+  document.getElementById('download-gif-btn').addEventListener('click', async function() {
+    const btn = this;
+    const progressEl = document.getElementById('gif-progress');
+    btn.disabled = true;
+    btn.textContent = '⏳ PREPARING...';
+    progressEl.style.display = 'block';
+
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+
+    const gif = new GIF({
+      workers: 2,
+      quality: 8,
+      width: 600,
+      height: 280,
+      workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js'
+    });
+
+    cancelAnimationFrame(battleAnimId);
+    for(let f=0; f<300; f+=5) {
+      drawBattleFrame(f);
+      const offscreen = document.createElement('canvas');
+      offscreen.width = 600; offscreen.height = 280;
+      offscreen.getContext('2d').drawImage(document.getElementById('battle-canvas'), 0, 0, 600, 280);
+      gif.addFrame(offscreen, {delay: 80, copy: true});
+      progressEl.textContent = `CAPTURING... ${Math.floor((f/300)*50)}%`;
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    gif.on('progress', p => {
+      progressEl.textContent = `RENDERING GIF... ${Math.floor(50 + p*50)}%`;
+    });
+
+    gif.on('finished', (blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'agent-wars-battle.gif';
+      a.click();
+      URL.revokeObjectURL(url);
+      btn.disabled = false;
+      btn.textContent = '⬇ DOWNLOAD BATTLE GIF';
+      progressEl.style.display = 'none';
+      battleLoop();
+    });
+
+    gif.render();
+  });
+
+  // ============================================
+  // COIN & CREDITS SYSTEM
+  // ============================================
+  let coinCredits = 0;
+  function insertCoin(e) {
+    coinCredits++;
+
+    const ctx2 = new (window.AudioContext || window.webkitAudioContext)();
+    [[440,0],[659,0.12],[880,0.24]].forEach(([freq, t]) => {
+      const o = ctx2.createOscillator();
+      const g = ctx2.createGain();
+      o.type = 'sawtooth';
+      o.connect(g); g.connect(ctx2.destination);
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.15, ctx2.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx2.currentTime + t + 0.1);
+      o.start(ctx2.currentTime + t);
+      o.stop(ctx2.currentTime + t + 0.12);
+    });
+
+    const float = document.createElement('div');
+    float.className = 'credit-float';
+    float.textContent = '+1 CREDIT';
+    float.style.left = (e.clientX - 40) + 'px';
+    float.style.top = (e.clientY - 20) + 'px';
+    document.body.appendChild(float);
+    setTimeout(() => float.remove(), 1300);
+
+    const display = document.getElementById('credits-display');
+    display.style.display = 'block';
+    document.getElementById('credits-count').textContent = coinCredits;
+
+    const pressBtn = document.querySelector('.press-start-btn');
+    if (pressBtn && coinCredits >= 1) {
+      pressBtn.style.borderColor = 'var(--pixel-green)';
+      pressBtn.style.boxShadow = '0 0 20px var(--pixel-green)';
+    }
+
+    if (coinCredits === 3) {
+      const egg = document.createElement('div');
+      egg.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d0d0d;border:3px solid #ffff00;box-shadow:0 0 30px #ffff00;padding:24px;z-index:9999;text-align:center;font-family:'Press Start 2P',monospace;color:#ffff00`;
+      egg.innerHTML = `<div style="font-size:14px;margin-bottom:12px">⭐ CHEAT CODE ⭐</div><div style="font-size:10px;margin-bottom:8px">KONAMI ACTIVATED</div><div style="font-size:8px;color:#00ff41">ALL STATS REVEALED</div><div style="font-size:8px;color:#ff4141;margin-top:12px">Ralph: σ=1.22 😬</div><div style="font-size:8px;color:#00ff41">AF: σ=0.60 ✓</div>`;
+      document.body.appendChild(egg);
+      setTimeout(() => egg.remove(), 3000);
+
+      for(let i=0; i<20; i++) {
+        setTimeout(() => {
+          const c = document.createElement('div');
+          c.style.cssText = `position:fixed;width:6px;height:6px;background:${['#ff4141','#00ff41','#ffff00','#00ffff'][Math.floor(Math.random()*4)]};top:${Math.random()*100}vh;left:${Math.random()*100}vw;pointer-events:none;z-index:9998;animation:floatUp 2s ease-out forwards`;
+          document.body.appendChild(c);
+          setTimeout(() => c.remove(), 2100);
+        }, i * 80);
+      }
+    }
+  }
+
+  // ============================================
+  // QUICK START TABS
+  // ============================================
+  function showTab(tabId) {
+    document.querySelectorAll('.qs-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.qs-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).style.display = 'block';
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+  }
+
+  // ============================================
+  // SCROLL PROGRESS & KEYBOARD NAV
+  // ============================================
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    const bar = document.getElementById('scroll-progress');
+    if (bar) bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+
+  const navSections = ['hero', 'fighter-select', 'the-arena', 'quickstart', 'results', 'verdict', 'gameover'];
+  let currentSectionIdx = 0;
+
+  function scrollToSection(idx) {
+    const possibleIds = ['hero', 'fighter-select', 'the-arena', 'quickstart', 'results', 'verdict', 'gameover'];
+    for(let id of possibleIds) {
+      if(idx < possibleIds.length) {
+        const el = document.getElementById(possibleIds[idx]);
+        if (el) { el.scrollIntoView({ behavior: 'smooth' }); currentSectionIdx = idx; break; }
+      }
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); scrollToSection(currentSectionIdx + 1); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); scrollToSection(currentSectionIdx - 1); }
+    if (e.key === 'Enter' && currentSectionIdx === 0) {
+      const pressBtn = document.querySelector('.press-start-btn');
+      if (pressBtn) pressBtn.click();
+    }
+  }, { passive: false });
+
+  // ============================================
+  // FIGHTER SELECTION & ANIMATIONS
+  // ============================================
+  function selectFighter(card) {
+    document.querySelectorAll('.fighter-card').forEach(c => {
+      const existing = c.querySelector('.selected-overlay');
+      if (existing) existing.remove();
+    });
+
+    const ctx3 = new (window.AudioContext || window.webkitAudioContext)();
+    [[523, 0], [659, 0.1], [784, 0.2]].forEach(([freq, t]) => {
+      const o = ctx3.createOscillator();
+      const g = ctx3.createGain();
+      o.type = 'square'; o.connect(g); g.connect(ctx3.destination);
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.1, ctx3.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx3.currentTime + t + 0.15);
+      o.start(ctx3.currentTime + t); o.stop(ctx3.currentTime + t + 0.18);
+    });
+
+    const overlay = document.createElement('div');
+    overlay.className = 'selected-overlay';
+    overlay.textContent = '✓ SELECTED!';
+    card.style.position = 'relative';
+    card.appendChild(overlay);
+    setTimeout(() => overlay.remove(), 1500);
+  }
+
+  // Update IntersectionObserver to use .visible class
+  const revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.classList.contains('reveal')) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 </script>
 
 </body>
