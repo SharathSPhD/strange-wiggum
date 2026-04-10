@@ -1,0 +1,108 @@
+{
+  "descriptives": [
+    {
+      "condition": "attractor",
+      "label": "AttractorFlow",
+      "n": 18,
+      "mean": 9.61111111111111,
+      "sd": 0.6076849889141857,
+      "median": 10.0,
+      "min": 8.0,
+      "max": 10.0,
+      "ci_95_lo": 9.333333333333334,
+      "ci_95_hi": 9.833333333333334
+    },
+    {
+      "condition": "ralph",
+      "label": "Ralph",
+      "n": 18,
+      "mean": 9.38888888888889,
+      "sd": 1.2432826042324117,
+      "median": 10.0,
+      "min": 5.0,
+      "max": 10.0,
+      "ci_95_lo": 8.722222222222221,
+      "ci_95_hi": 9.833333333333334
+    }
+  ],
+  "normality": {
+    "attractor": {
+      "W": 0.6620491234996801,
+      "p_value": 2.9862095761568596e-05,
+      "n": 18,
+      "normal": false
+    },
+    "ralph": {
+      "W": 0.5582516254413303,
+      "p_value": 2.6821998962477876e-06,
+      "n": 18,
+      "normal": false
+    }
+  },
+  "rm_anova": {
+    "error": "Need 3 conditions, found ['attractor', 'ralph']"
+  },
+  "pairwise": [
+    {
+      "condition_a": "ralph",
+      "condition_b": "attractor",
+      "mean_a": 9.38888888888889,
+      "mean_b": 9.61111111111111,
+      "mean_diff": -0.2222222222222222,
+      "ci_95_lo": -0.8888888888888888,
+      "ci_95_hi": 0.2222222222222222,
+      "t_stat": -0.7204748222288193,
+      "p_value": 0.48102303437984095,
+      "p_bonferroni": 0.48102303437984095,
+      "significant": "False",
+      "cohen_d": -0.16981754415726039,
+      "alpha_bonferroni": 0.05
+    }
+  ],
+  "kruskal_iterations": {
+    "H_stat": 20.91600184992483,
+    "p_value": 4.798691814446669e-06,
+    "variable": "iterations"
+  },
+  "lambda_quality_correlation": {
+    "pearson_r": -0.4643632005939908,
+    "p_value": 0.052210189529251966,
+    "n": 18
+  },
+  "icc": {
+    "ICC_type": "ICC(A,1)",
+    "icc": -0.07901907356948266,
+    "ci_95_lo": -0.32,
+    "ci_95_hi": 0.35,
+    "F": 0.7883211678832108,
+    "p_value": 0.6493094702242825
+  },
+  "subgroup_anova": {
+    "analysis": {
+      "F": 0.0,
+      "p_value": 1.0,
+      "partial_eta_sq": 0.0,
+      "n_tasks": 1,
+      "n_obs": 6
+    },
+    "coding": {
+      "F": 0.5544554455445507,
+      "p_value": 0.46881866805019057,
+      "partial_eta_sq": 0.01826484018264828,
+      "n_tasks": 5,
+      "n_obs": 30
+    }
+  },
+  "power": {
+    "n_per_condition": "18",
+    "observed_F": 0.0,
+    "df1": 2,
+    "df2": "34",
+    "power_approx": 0.050000000000000155,
+    "alpha": 0.05
+  },
+  "n_trials": 36,
+  "n_tasks": 6,
+  "n_conditions": 2,
+  "n_reps": 3
+}

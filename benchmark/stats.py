@@ -226,7 +226,7 @@ def run_subgroup_anova(df: pd.DataFrame, manifest_path: str = BLIND_MANIFEST) ->
 
     # Infer task category from task_id prefix (C = coding, A = analysis)
     df = df.copy()
-    df["category"] = df["task_id"].apply(lambda x: "coding" if str(x).startswith("C") else "analysis")
+    df["category"] = df["task_id"].apply(lambda x: "coding" if str(x).startswith(("C", "H")) else "analysis")
 
     results = {}
     for cat, sub_df in df.groupby("category"):

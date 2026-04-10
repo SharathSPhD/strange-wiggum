@@ -212,7 +212,7 @@ def _task_breakdown(df: pd.DataFrame) -> str:
     lines += [header, sep]
 
     df = df.copy()
-    df["category"] = df["task_id"].apply(lambda x: "coding" if str(x).startswith("C") else "analysis")
+    df["category"] = df["task_id"].apply(lambda x: "coding" if str(x).startswith(("C", "H")) else "analysis")
 
     for tid in sorted(df["task_id"].unique()):
         tdf = df[df["task_id"] == tid]
