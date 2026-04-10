@@ -780,8 +780,6 @@
        ============================================ -->
   <section id="hero">
     <canvas id="battle-canvas" width="800" height="280" style="width:min(800px,90vw);height:auto;border:3px solid var(--pixel-border);box-shadow:0 0 20px var(--pixel-border);image-rendering:pixelated;display:block;margin:0 auto"></canvas>
-    <button id="download-gif-btn" class="pixel-button" style="margin-top:12px;font-size:9px">⬇ DOWNLOAD BATTLE GIF</button>
-    <div id="gif-progress" style="display:none;color:var(--pixel-green);font-size:8px;margin-top:6px;font-family:'Press Start 2P',monospace">RENDERING GIF... 0%</div>
     <h1 class="hero-title" id="typewriter-title"></h1>
     <h2 class="hero-subtitle">RALPH WIGGUM  VS  ATTRACTORFLOW</h2>
     <p class="hero-meta">38 TRIALS · 6 TASKS · BLINDED JUDGE</p>
@@ -2661,59 +2659,6 @@
 
   window.addEventListener('load', () => {
     battleLoop();
-  });
-
-  // GIF Download
-  document.getElementById('download-gif-btn').addEventListener('click', async function() {
-    const btn = this;
-    const progressEl = document.getElementById('gif-progress');
-    btn.disabled = true;
-    btn.textContent = '⏳ PREPARING...';
-    progressEl.style.display = 'block';
-
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js';
-      s.onload = resolve; s.onerror = reject;
-      document.head.appendChild(s);
-    });
-
-    const gif = new GIF({
-      workers: 2,
-      quality: 8,
-      width: 600,
-      height: 280,
-      workerScript: 'https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js'
-    });
-
-    cancelAnimationFrame(battleAnimId);
-    for(let f=0; f<300; f+=5) {
-      drawBattleFrame(f);
-      const offscreen = document.createElement('canvas');
-      offscreen.width = 600; offscreen.height = 280;
-      offscreen.getContext('2d').drawImage(document.getElementById('battle-canvas'), 0, 0, 600, 280);
-      gif.addFrame(offscreen, {delay: 80, copy: true});
-      progressEl.textContent = `CAPTURING... ${Math.floor((f/300)*50)}%`;
-      await new Promise(r => setTimeout(r, 0));
-    }
-
-    gif.on('progress', p => {
-      progressEl.textContent = `RENDERING GIF... ${Math.floor(50 + p*50)}%`;
-    });
-
-    gif.on('finished', (blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'agent-wars-battle.gif';
-      a.click();
-      URL.revokeObjectURL(url);
-      btn.disabled = false;
-      btn.textContent = '⬇ DOWNLOAD BATTLE GIF';
-      progressEl.style.display = 'none';
-      battleLoop();
-    });
-
-    gif.render();
   });
 
   // ============================================

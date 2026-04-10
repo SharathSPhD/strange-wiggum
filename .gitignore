@@ -40,3 +40,12 @@ benchmark/results/raw/
 # Secrets / local config
 .env
 *.env
+
+# Intermediate / scratch markdown files in project root
+# (README.md is explicitly kept via negation)
+/*.md
+!/README.md
+
+# Root-level scratch Python files (not part of benchmark package)
+/solution.py
+/test_*.py
